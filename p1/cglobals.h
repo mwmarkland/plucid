@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+#include "y.tab.h"
 
 STRING   incdir;
 
@@ -42,7 +45,7 @@ int     linebuf[BUFFERLENGTH];
 FILE     *lexin;
 /* used to hold the value of the current input file */
 
-YYSTYPE  yylval;
+/* YYSTYPE  yylval; */
 
 struct   {
   FILE   *in_fdes;

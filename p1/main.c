@@ -2,6 +2,16 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
+/* 
+ * Forward declarations/prototypes. 
+ */
+
+STRING strsave(char *s);
+void my_exit(int n);
+void initialise();
+int eqstring(STRING a, STRING b);
+void connect_file(int argc,char *argv[]);
+
 STRING fname;
 
 int main(int argc,char *argv[])
@@ -65,10 +75,8 @@ void initialise()
   /* No newline character has been encountered */
 }
 
-connect_file(int argc,char *argv[])
+void connect_file(int argc,char *argv[])
 {
-  STRING calloc();
-  STRING strsave();
   int i,j;
   extern FILE *lexin;
 
@@ -170,7 +178,7 @@ void output(EXPRPTR p)
 STRING strsave(char *s)
 {
   char  *p;
-  STRING calloc();
+
   if ( ( p = calloc(1,strlen(s)+1))==NULL)
     fprintf(stderr,"ran out of space\n");
   else strcpy(p,s);
