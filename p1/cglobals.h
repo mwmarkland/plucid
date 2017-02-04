@@ -55,4 +55,4 @@ struct   {
 
 STRING   s,t;
 
-int     buffer[500];
+char     buffer[500];

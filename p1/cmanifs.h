@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "y.tab.h"
+//#include "y.tab.h"
 
 #define NKEYWORDS         162
 #define BUFFERLENGTH      200
@@ -20,9 +20,8 @@
 
 #define YYSTYPE union stacktype
 
-typedef struct RES  RES,  *RESPTR;
-typedef struct EXPR EXPR, *EXPRPTR;
-typedef char              *STRING;
+typedef char  *STRING;
+typedef struct EXPR *EXPRPTR;
 
 typedef union X_OR_I {
   int      i;
@@ -30,6 +29,21 @@ typedef union X_OR_I {
   char    *s;
   EXPRPTR  x;
 } X_OR_I;
+
+typedef struct EXPR {
+  int     f;
+  X_OR_I  arg1, arg2, arg3, arg4,arg5;
+} EXPR;
+
+
+typedef struct RES {
+  int     len;
+  int     line;
+  char   *strg;
+} RES;
+
+typedef RES  *RESPTR;
+
 
 typedef struct EXPR2 {
   int     f;
@@ -51,17 +65,6 @@ typedef struct EXPR5 {
   X_OR_I  arg1,arg2,arg3,arg4,arg5;
 } EXPR5;
 
-struct EXPR          {
-  int     f;
-  X_OR_I  arg1, arg2, arg3, arg4,arg5;
-};
-
-
-struct RES           {
-  int     len;
-  int     line;
-  char   *strg;
-};
 
 union stacktype      {
 
@@ -74,3 +77,4 @@ union stacktype      {
   /* for expressions pointers returned by yacc actions */
   EXPRPTR eptr;
 };
+

@@ -1,6 +1,8 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
+EXPRPTR f_connode(float n);
+void output(EXPRPTR p);
 
 void pass1(EXPRPTR e)
 {
@@ -44,7 +46,7 @@ float stripn(char s[])
 {
   int n;
   float mknumber();
-  EXPRPTR f_connode();
+
   for (n=0; (isalpha(*s)|| *s == '@'); s++) { n++; }
   return(mknumber(s));
 }
@@ -53,7 +55,7 @@ EXPRPTR stripnumb(char s[])
 {
   int n;
   float mknumber();
-  EXPRPTR f_connode();
+
   for (n=0; (isalpha(*s)|| *s == '@'); s++) { n++; }
   return(f_connode(mknumber(s)));
 }
@@ -124,7 +126,7 @@ EXPRPTR f_connode(float n)
   return(p);
 }
 
-EXPRPTR varnode(int name,int argcount,EXPRPTR exprlist, EXPRPTR file)
+EXPRPTR varnode(char *name,int argcount,EXPRPTR exprlist, EXPRPTR file)
 {
 
   EXPRPTR p;

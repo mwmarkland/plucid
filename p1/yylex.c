@@ -12,6 +12,7 @@
 
 #define NSYNWORDS  62
 
+
 struct {
   STRING synname;
   STRING keyname;
@@ -250,12 +251,23 @@ struct {
     {"imag",        C1FUNC},
   };
 
-
+void my_yyerror(STRING a, STRING b); /* expr.c */
+void my_exit(int n); /* main.c */
+int lexgetc();
+int iswhite(char c);
+int keyfind(STRING s);
+STRING synfind(STRING s);
+float getnum(char c);
+STRING getident(int c);
+STRING getstring(char c);
+STRING getword2(int c);
+STRING getword(char c);
+void inclusion();
+int is_sign(char c);
+STRING strsave(char *);
 int yylex()
 {
   int k;
-  STRING synfind(),strsave(),getident(),getword2(),getstring(),getword();
-  float getnum();
   while(iswhite(c=lexgetc()));
   startoflex = curr_index;
   if((isalpha(c)||c=='@' )&& c != EOF) {
@@ -574,7 +586,7 @@ void inclusion()
   in_files[in_index].in_name = strsave(buffer);
   in_files[in_index].in_line = 1;
   i = 0;
-  while (((int)c=getc(lexin))=='\n') { }
+  while ((c=getc(lexin))=='\n') { }
   while ( c !='\n' && c != EOF){
     linebuf[i]=c;
     c = getc(lexin);
@@ -596,7 +608,7 @@ int lexgetc()
   }else if((curr_index > curr_length)){
 
     i = 0;
-    while (((int)c=getc(lexin))=='\n') {
+    while ((c=getc(lexin))=='\n') {
       in_files[in_index].in_line++;
       newline = true;
     }
@@ -609,7 +621,7 @@ int lexgetc()
     curr_length = i;
     c = linebuf[curr_index];
   }
-  if( ((int) c=linebuf[curr_index])==EOF){
+  if( (c=linebuf[curr_index])==EOF){
     if(in_index!=0){
       in_index--;
       lexin = in_files[in_index].in_fdes;
@@ -640,7 +652,6 @@ STRING getword(char c)
 {
   int l;
   STRING p;
-  char is_sign();
   p = (char *)buffer;
   switch(c) {
     case ';':
@@ -701,7 +712,6 @@ STRING getword2(int c)
 {
   int l;
   STRING p;
-  char is_sign();
   p = (char *)buffer;
   switch(c) {
     case ';':
@@ -888,7 +898,6 @@ float getnum(char c)
   return(sign*(mansum+expsum/expcount));
 }
 
-
 STRING synfind(STRING s)
 {
   int i;
@@ -904,9 +913,7 @@ int keyfind(STRING s)
   return(i);
 }
 
-
-
-iswhite(c)
+int iswhite(char c)
 {
   return(c==' ' || c=='\n' || c=='\t');
 }
