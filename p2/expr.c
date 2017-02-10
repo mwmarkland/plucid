@@ -1,15 +1,18 @@
 #include "cmanifs.h"
 #include "cglobals.h"
-
+void nameclashes(EXPRPTR arg);
+void output(EXPRPTR p);         /* main.o */
 EXPRPTR
-pass2(e)
-EXPRPTR e;
-{    noclashes = true;
-     nameclashes(e);
-     if (noclashes) output(e); }
+pass2(EXPRPTR e)
 
-nameclashes(arg)
-EXPRPTR arg;
+{
+  noclashes = true;
+  nameclashes(e);
+  if (noclashes)
+    output(e);
+}
+
+void nameclashes(EXPRPTR arg)
 {  return;  }
   /*EXPRPTR file;
   switch(arg->f){
@@ -163,7 +166,7 @@ filenode(filename,first_line,last_line,cursor_position)
 char *filename;
 int first_line,last_line,cursor_position;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR4));
 	p->f = F_FILE;
@@ -178,7 +181,7 @@ EXPRPTR
 connode(s1,s2)
 char *s1, *s2;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f = F_CONST;
@@ -191,7 +194,7 @@ EXPRPTR
 f_connode(n)
 float n;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f =      F_CONST;
@@ -206,7 +209,7 @@ char *name;
 int argcount;
 EXPRPTR exprlist,file;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_VAR;
@@ -218,12 +221,9 @@ EXPRPTR exprlist,file;
 }
 
 EXPRPTR
-opnode(name,argcount,exprlist,file)
-char *name;
-int argcount;
-EXPRPTR exprlist,file;
+opnode(char *name,int argcount,EXPRPTR exprlist,EXPRPTR file)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_OP;
@@ -234,12 +234,9 @@ EXPRPTR exprlist,file;
 	return(p);
 }
 
-EXPRPTR
-wherenode(expr,exprlist,file)
-EXPRPTR expr;
-EXPRPTR exprlist,file;
+EXPRPTR wherenode(EXPRPTR expr,EXPRPTR exprlist,EXPRPTR file)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_WHERE;
@@ -249,13 +246,9 @@ EXPRPTR exprlist,file;
 	return(p);
 }
 
-EXPRPTR
-defnode(name,argcount,argnames,expr,file)
-char *name;
-int argcount;
-EXPRPTR argnames,expr,file;
+EXPRPTR defnode(char *name,int argcount,EXPRPTR argnames,EXPRPTR expr,EXPRPTR file)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR5));
 	p->f =      F_DEFN;
@@ -267,12 +260,9 @@ EXPRPTR argnames,expr,file;
 	return(p);
 }
 
-EXPRPTR
-declnode(name,expr,file)
-char *name;
-EXPRPTR expr,file;
+EXPRPTR declnode(char *name,EXPRPTR expr,EXPRPTR file)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_DECL;
@@ -283,12 +273,9 @@ EXPRPTR expr,file;
 }
 
 
-EXPRPTR
-identlistnode(tail,name)
-EXPRPTR tail;
-char *name;
+EXPRPTR identlistnode(EXPRPTR tail,char *name)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_IDENTLISTNODE;
@@ -297,11 +284,9 @@ char *name;
 	return(p);
 }
 
-EXPRPTR
-listnode(tail,expr)
-EXPRPTR expr,tail;
+EXPRPTR listnode(EXPRPTR tail,EXPRPTR expr)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_LISTNODE;
@@ -310,11 +295,9 @@ EXPRPTR expr,tail;
 	return(p);
 }
 
-EXPRPTR
-exprlist2(expr1,expr2)
-EXPRPTR expr1,expr2;
+EXPRPTR exprlist2(EXPRPTR expr1,EXPRPTR expr2)
 {
-	STRING calloc();
+
 	EXPRPTR p1,p2;
 	p1 = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p2 = (EXPRPTR) calloc(1,sizeof(EXPR2));
@@ -328,6 +311,7 @@ EXPRPTR expr1,expr2;
 	return(p2);
 }
 
-yyerror(a)
-STRING a;
-{ fprintf(stderr,"%s\n",a); }
+void yyerror(STRING a)
+{
+  fprintf(stderr,"%s\n",a);
+}

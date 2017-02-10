@@ -1,3 +1,5 @@
+#include "y.tab.h"
+
 #define copy(x,y) x = y
 
 int l,c,peekc,errcount,in_index,true,false;
