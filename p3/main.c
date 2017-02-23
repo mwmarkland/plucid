@@ -4,9 +4,16 @@
 
 STRING fname,oldname;
 
-printfilter(newname)
-STRING newname;
-{ int i;
+void initialise();
+void connect_file(int argc,char *argv[]);
+void output(EXPRPTR p);
+STRING strsave(char *s);
+int eqstring(STRING a,STRING b);
+void my_exit(int n);
+  
+void printfilter(STRING newname)
+{
+  int i;
 /*  for (i = 0; i<21; i++) fprintf(stderr," ");
   for (i = 0; i<32; i++) fprintf(stderr,"-");
   fprintf(stderr,"\n");
@@ -35,32 +42,32 @@ STRING newname;
   fprintf(stderr,"\\/\n"); */
 }
 
-main(argc,argv)
-int argc;
-char ** argv ;
-{       int i,temp;
-	initialise();
-	connect_file(argc,argv);
-	/*if ((outfile=fopen(fname,"w")) == NULL) {
-	fprintf(stderr,"cannot create %s\n",fname);
-	 my_exit(1); } */
-	printfilter(fname);
-	temp=yyparse();
-	if ( temp || errcount )
-	 {
-	   fprintf(stderr,"Fatal errors: no expression file written.\n");
-	   my_exit(1);
-	 }
+int main(int argc,char *argv[])
+{
+  int i,temp;
+  initialise();
+  connect_file(argc,argv);
+  /*if ((outfile=fopen(fname,"w")) == NULL) {
+    fprintf(stderr,"cannot create %s\n",fname);
+    my_exit(1); } */
+  printfilter(fname);
+  temp=yyparse();
+  if ( temp || errcount )
+    {
+      fprintf(stderr,"Fatal errors: no expression file written.\n");
+      my_exit(1);
+    }
+  return 0;
 }
 
-accept()
+void accept()
 {
     /*if ((outfile=fopen(fname,"w")) == NULL) {
     fprintf(stderr,"cannot create %s\n",fname);
     my_exit(1); } */
 }
 
-initialise()
+void initialise()
 {
 	int i;
 
@@ -75,49 +82,45 @@ initialise()
 	largest = '\0';
 }
 
-connect_file(argc,argv)
-int argc;
-char **argv;
+void connect_file(int argc,char *argv[])
 {
-	STRING calloc();
-	STRING strsave();
-	int i,j;
-	extern FILE *lexin;
 
-	/* connect to source file */
-	if(argc>1){
-		fname = argv[1];
-		oldname = strsave(fname);
-		in_index = 0;
-		for(j=0; fname[j]; j++);
-		if(j<2 || fname[j-1]!='f' || fname[j-2]!='.'){
-			fprintf(stderr,"%s:filename ending in .f expected\n",
-				fname);
-			my_exit(1);
-		}
-		if( (lexin=fopen(fname,"r")) == NULL ){
-			fprintf(stderr,"cannot open %s\n",fname);
-			my_exit(1);
-		}
-		in_files[in_index].in_name = strsave(fname);
-		fname[j-1] = 'g';
-	}else{
-		in_files[in_index].in_name = "stdin";
-		fname = "?.g";
-		lexin = stdin;
-	}
-	savelex=lexin;
-	in_files[in_index].in_line = 0;
-	in_files[in_index].in_fdes = lexin;
+  int i,j;
+  extern FILE *lexin;
+  
+  /* connect to source file */
+  if(argc>1){
+    fname = argv[1];
+    oldname = strsave(fname);
+    in_index = 0;
+    for(j=0; fname[j]; j++);
+    if(j<2 || fname[j-1]!='f' || fname[j-2]!='.'){
+      fprintf(stderr,"%s:filename ending in .f expected\n",
+              fname);
+      my_exit(1);
+    }
+    if( (lexin=fopen(fname,"r")) == NULL ){
+      fprintf(stderr,"cannot open %s\n",fname);
+      my_exit(1);
+    }
+    in_files[in_index].in_name = strsave(fname);
+    fname[j-1] = 'g';
+  }else{
+    in_files[in_index].in_name = "stdin";
+    fname = "?.g";
+    lexin = stdin;
+  }
+  savelex=lexin;
+  in_files[in_index].in_line = 0;
+  in_files[in_index].in_fdes = lexin;
+  
+}
 
-   }
-
-output(p)
-EXPRPTR p;
+void output(EXPRPTR p)
 {
- EXPRPTR tmp;
- switch(p->f){
-   case F_CONST: if (eqstring(p->arg1.s,"string")) {
+  EXPRPTR tmp;
+  switch(p->f){
+    case F_CONST: if (eqstring(p->arg1.s,"string")) {
 				 fprintf(stdout," [ const [ string '%s` ] ",
 					  p->arg2.s);
 				 fprintf(stdout," ] ");
@@ -179,32 +182,29 @@ EXPRPTR p;
  }
 }
 
-STRING
-strsave(s)
-char *s;
-    {    char  *p;
-	 STRING calloc();
-	 if ( ( p = calloc(1,strlen(s)+1))==NULL)
-	      fprintf(stderr,"ran out of space\n");
-	      else strcpy(p,s);
-	 return(p);
-
-    }
-
-eqstring(a,b)
-STRING a,b;
+STRING strsave(char *s)
 {
-	while( *a++ == *b++ ){
-		if ( *a == '\0' && *b == '\0' ) {
-			return(1);
-		} else if (*a == '\0' || *b == '\0') break;
-	}
-	return(0);
+  char  *p;
+  if ( ( p = calloc(1,strlen(s)+1))==NULL)
+    fprintf(stderr,"ran out of space\n");
+  else strcpy(p,s);
+  return(p);
+  
 }
 
-my_exit(n)
-int n;
+int eqstring(STRING a,STRING b)
+
 {
-    fprintf(stdout,"%c\n",'\032');
-    exit(n);
+  while( *a++ == *b++ ){
+    if ( *a == '\0' && *b == '\0' ) {
+      return(1);
+    } else if (*a == '\0' || *b == '\0') break;
+  }
+  return(0);
+}
+
+void my_exit(int n)
+{
+  fprintf(stdout,"%c\n",'\032');
+  exit(n);
 }

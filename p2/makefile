@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-fdiagnostics-color=never 
+CFLAGS=-std=c99 -fdiagnostics-color=never 
 CPPFLAGS=-DYYMAXDEPTH=900
 LDFLAGS=-static
 

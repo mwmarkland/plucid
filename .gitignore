@@ -1,0 +1,8 @@
+*.o
+y.tab.h
+y.tab.c
+pass1
+pass2
+pass3
+pass4
+pass5

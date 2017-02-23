@@ -1,13 +1,16 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 int varcount=0;
+void output(EXPRPTR p);         /* main.o */
+STRING strsave( char *s);       /* main.o */
+void yyerror(STRING a);         /* expr.o */
+int eqstring(STRING a,STRING b); /* main.o */
 
 EXPRPTR
 filenode(filename,first_line,last_line,cursor_position)
 char *filename;
 int first_line,last_line,cursor_position;
 {
-	STRING calloc(),strsave();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR4));
 	p->f = F_FILE;
@@ -149,7 +152,6 @@ EXPRPTR
 connode(s1,s2)
 char *s1, *s2;
 {
-	STRING calloc(),strsave();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f = F_CONST;
@@ -162,7 +164,7 @@ EXPRPTR
 f_connode(n)
 float n;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f =      F_CONST;
@@ -177,7 +179,7 @@ char *name;
 int argcount;
 EXPRPTR exprlist;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_VAR;
@@ -193,7 +195,7 @@ char *name;
 int argcount;
 EXPRPTR exprlist,file;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_OP;
@@ -209,7 +211,7 @@ wherenode(expr,exprlist)
 EXPRPTR expr;
 EXPRPTR exprlist;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_WHERE;
@@ -224,7 +226,7 @@ char *name;
 int argcount;
 EXPRPTR argnames,expr;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_DEFN;
@@ -240,7 +242,7 @@ declnode(name,expr)
 char *name;
 EXPRPTR expr;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_DECL;
@@ -255,7 +257,7 @@ identlistnode(tail,name)
 EXPRPTR tail;
 char *name;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_IDENTLISTNODE;
@@ -268,7 +270,7 @@ EXPRPTR
 listnode(tail,expr)
 EXPRPTR expr,tail;
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_LISTNODE;
@@ -281,7 +283,7 @@ EXPRPTR
 exprlist3(expr1,expr2,expr3)
 EXPRPTR expr1,expr2,expr3;
 {
-	STRING calloc();
+
 	EXPRPTR p1,p2,p3;
 	p1 = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p2 = (EXPRPTR) calloc(1,sizeof(EXPR2));
@@ -302,7 +304,7 @@ EXPRPTR
 exprlist2(expr1,expr2)
 EXPRPTR expr1,expr2;
 {
-	STRING calloc();
+
 	EXPRPTR p1,p2;
 	p1 = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p2 = (EXPRPTR) calloc(1,sizeof(EXPR2));
@@ -315,6 +317,9 @@ EXPRPTR expr1,expr2;
 	return(p2);
 }
 
-yyerror(a)
-STRING a;
-{ fprintf(stderr,"%s\n",a); }
+void yyerror(STRING a)
+
+{
+  fprintf(stderr,"%s\n",a);
+  return;
+}

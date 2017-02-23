@@ -1,6 +1,8 @@
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "y.tab.h"
+/* #include "y.tab.h" */
 
 #define cycle   for(;;)
 #define NL      '\n'
@@ -19,18 +21,26 @@
 #define F_LISTNODE 8
 #define F_FILE 9
 
+
 typedef struct EXPR EXPR, *EXPRPTR;
 
 typedef union X_OR_I {
-	int i;
-	float r;
-	char *s;
-	EXPRPTR x;
-		      } X_OR_I;
+  int i;
+  float r;
+  char *s;
+  EXPRPTR x;
+} X_OR_I;
+
+struct EXPR {
+  int f;
+  X_OR_I arg1, arg2, arg3, arg4, arg5;
+} ;
+
+
 typedef struct EXPR2 {
-	int f;
-	X_OR_I arg1, arg2;
-		      } EXPR2;
+  int f;
+  X_OR_I arg1, arg2;
+} EXPR2;
 
 typedef struct EXPR3 {
 	int f;
@@ -46,11 +56,6 @@ typedef struct EXPR5 {
 	int f;
 	X_OR_I arg1,arg2,arg3,arg4,arg5;
 		      } EXPR5;
-
-struct EXPR {
-	int f;
-	X_OR_I arg1, arg2, arg3, arg4, arg5;
-	     } ;
 
 typedef char *STRING;
 

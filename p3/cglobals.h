@@ -1,3 +1,5 @@
+#include "y.tab.h"
+
 #define copy(x,y) x = y
 
 int wvr_upon_count;

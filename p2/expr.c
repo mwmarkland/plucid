@@ -2,6 +2,7 @@
 #include "cglobals.h"
 void nameclashes(EXPRPTR arg);
 void output(EXPRPTR p);         /* main.o */
+STRING strsave( char *s);       /* main.o */
 EXPRPTR
 pass2(EXPRPTR e)
 

@@ -1,13 +1,19 @@
+CC = gcc
 R=
 DESTDIR=/usr/local/bin
-CFLAGS=-O -DYYMAXDEPTH=900
+CPPFLAGS=-DYYMAXDEPTH=900
+CFLAGS=-std=c99 -fdiagnostics-color=never 
+LDFLAGS=-static
 LINT= lint -p
 TAR= tar -cv
 PRINT= pr -t $1 | cat -n
 inc = cmanifs.h cglobals.h
 
+%.o : %.c cglobals.h cmanifs.h y.tab.h
+	$(CC) -c -I. $(CPPFLAGS) $(CFLAGS) $< -o $@
+
 pass3: main.o y.tab.o yylex.o expr.o ;
-	cc -s main.o expr.o y.tab.o yylex.o -o pass3
+	$(CC) $(LDFLAGS) main.o expr.o y.tab.o yylex.o -o pass3
 
 cp install:
 	cp pass3 $R$(DESTDIR)/pass3
@@ -31,10 +37,5 @@ all:    main.o y.tab.o yylex.o expr.o ;
 	cp pass3 $R$(DESTDIR)/pass3
 	rm -f *.o y.tab.h y.tab.c pass3
 
-main.o: $(inc) main.c
-cmanifs.h: y.tab.h
 y.tab.c y.tab.h: tree.y
 	yacc -d tree.y
-y.tab.o: $(inc) y.tab.h y.tab.c
-yylex.o: $(inc) yylex.c
-expr.o: $(inc) expr.c
