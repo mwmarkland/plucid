@@ -4,15 +4,21 @@
 
 STRING fname,oldname;
 
-printfilter(newname)
-STRING newname;
-{ int i;
+void initialise();
+void connect_file(int argc,char *argv[]);
+void output(EXPRPTR p);
+STRING strsave(char *s);
+int eqstring(STRING a,STRING b);
+void my_exit(int n);
+
+void printfilter(STRING newname)
+{
+  int i;
 }
 
-main(argc,argv)
-int argc;
-char ** argv ;
-{       int i,temp;
+int main(int argc,char *argv[])
+{
+  int i,temp;
 	initialise();
 	connect_file(argc,argv);
 	/*if ((outfile=fopen(fname,"w")) == NULL) {
@@ -27,14 +33,14 @@ char ** argv ;
 	 }
 }
 
-accept()
+void accept()
 {
     /*if ((outfile=fopen(fname,"w")) == NULL) {
     fprintf(stderr,"cannot create %s\n",fname);
     my_exit(1); } */
 }
 
-initialise()
+void initialise()
 {
 	int i;
 
@@ -62,12 +68,9 @@ initialise()
 			    }
 }
 
-connect_file(argc,argv)
-int argc;
-char **argv;
+void connect_file(int argc,char *argv[])
 {
-	STRING calloc();
-	STRING strsave();
+;
 	int i,j;
 	extern FILE *lexin;
 
@@ -99,8 +102,7 @@ char **argv;
 
    }
 
-output(p)
-EXPRPTR p;
+void output(EXPRPTR p)
 {
  EXPRPTR tmp;
  switch(p->f){
@@ -183,31 +185,30 @@ EXPRPTR p;
  }
 }
 
-STRING
-strsave(s)
-char *s;
-    {    char  *p;
-	 STRING calloc();
-	 if ( ( p = calloc(1,strlen(s)+1))==NULL)
-	      fprintf(stderr,"ran out of space\n");
-	      else strcpy(p,s);
-	 return(p);
-
-    }
-
-eqstring(a,b)
-STRING a,b;
+STRING strsave(char *s)
 {
-	while( *a++ == *b++ ){
-		if ( *a == '\0' && *b == '\0' ) {
-			return(1);
-		} else if (*a == '\0' || *b == '\0') break;
-	}
-	return(0);
+  char  *p;
+
+  if ( ( p = calloc(1,strlen(s)+1))==NULL)
+    fprintf(stderr,"ran out of space\n");
+  else
+    strcpy(p,s);
+  return(p);
+  
 }
 
-my_exit(n)
-int n;
+int eqstring(STRING a, STRING b)
+{
+  while( *a++ == *b++ ){
+    if ( *a == '\0' && *b == '\0' ) {
+      return(1);
+    } else if (*a == '\0' || *b == '\0') break;
+  }
+  return(0);
+}
+
+void my_exit(int n)
+
 {
     fprintf(stdout,"%c\n",'\032');
     exit(n);

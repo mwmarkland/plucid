@@ -1,13 +1,27 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
+void output(EXPRPTR p);         /* main.o */
+STRING strsave( char *s);       /* main.o */
+void yyerror(STRING a);         /* expr.o */
+int eqstring(STRING a,STRING b); /* main.o */
+EXPRPTR listnode(EXPRPTR tail, EXPRPTR expr);
+EXPRPTR opnode(char *name,int argcount,EXPRPTR exprlist,EXPRPTR file);
+EXPRPTR varnode(char *name,int argcount,EXPRPTR exprlist);  
+EXPRPTR defnode(char *name,int argcount,EXPRPTR argnames,EXPRPTR expr);
+EXPRPTR valofnode(EXPRPTR exprlist);
+EXPRPTR identlistnode(EXPRPTR tail,char *name);
+EXPRPTR eglobnode(EXPRPTR namelist);
+EXPRPTR nglobnode(EXPRPTR namelist);
+EXPRPTR evalofnode(EXPRPTR exprlist);
+EXPRPTR wherenode(EXPRPTR expr,EXPRPTR exprlist);
+EXPRPTR declnode(char *name, EXPRPTR expr);
 
 EXPRPTR
 filenode(filename,first_line,last_line,cursor_position)
 char *filename;
 int first_line,last_line,cursor_position;
 {
-	STRING calloc(),strsave();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR4));
 	p->f = F_FILE;
@@ -22,7 +36,6 @@ EXPRPTR
 connode(s1,s2)
 char *s1, *s2;
 {
-	STRING calloc(),strsave();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f = F_CONST;
@@ -35,7 +48,7 @@ EXPRPTR
 f_connode(n)
 float n;
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f =      F_CONST;
@@ -44,13 +57,9 @@ float n;
 	return(p);
 }
 
-EXPRPTR
-varnode(name,argcount,exprlist)
-char *name;
-int argcount;
-EXPRPTR exprlist;
+EXPRPTR varnode(char *name,int argcount,EXPRPTR exprlist)
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_VAR;
@@ -60,13 +69,9 @@ EXPRPTR exprlist;
 	return(p);
 }
 
-EXPRPTR
-opnode(name,argcount,exprlist,file)
-char *name;
-int argcount;
-EXPRPTR exprlist,file;
+EXPRPTR opnode(char *name,int argcount,EXPRPTR exprlist,EXPRPTR file)
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_OP;
@@ -77,11 +82,8 @@ EXPRPTR exprlist,file;
 	return(p);
 }
 
-EXPRPTR
-eglobnode(namelist)
-EXPRPTR namelist;
+EXPRPTR eglobnode(EXPRPTR namelist)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR));
 	p->f =      F_EGLOBALS;
@@ -89,11 +91,9 @@ EXPRPTR namelist;
 	return(p);
 }
 
-EXPRPTR
-nglobnode(namelist)
-EXPRPTR namelist;
+EXPRPTR nglobnode(EXPRPTR namelist)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR));
 	p->f =      F_NGLOBALS;
@@ -101,11 +101,9 @@ EXPRPTR namelist;
 	return(p);
 }
 
-EXPRPTR
-valofnode(exprlist)
-EXPRPTR exprlist;
+EXPRPTR valofnode(EXPRPTR exprlist)
 {
-	STRING calloc();
+
 	EXPRPTR p,listnode();
 	p = (EXPRPTR) calloc(1,sizeof(EXPR));
 	p->f =      F_VALOF;
@@ -113,11 +111,9 @@ EXPRPTR exprlist;
 	return(p);
 }
 
-EXPRPTR
-evalofnode(exprlist)
-EXPRPTR exprlist;
+EXPRPTR evalofnode(EXPRPTR exprlist)
 {
-	STRING calloc();
+
 	EXPRPTR p,listnode();
 	p = (EXPRPTR) calloc(1,sizeof(EXPR));
 	p->f =      F_EVALOF;
@@ -125,12 +121,9 @@ EXPRPTR exprlist;
 	return(p);
 }
 
-EXPRPTR
-wherenode(expr,exprlist)
-EXPRPTR expr;
-EXPRPTR exprlist;
+EXPRPTR wherenode(EXPRPTR expr,EXPRPTR exprlist)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_WHERE;
@@ -139,13 +132,9 @@ EXPRPTR exprlist;
 	return(p);
 }
 
-EXPRPTR
-defnode(name,argcount,argnames,expr)
-char *name;
-int argcount;
-EXPRPTR argnames,expr;
+EXPRPTR defnode(char *name,int argcount,EXPRPTR argnames,EXPRPTR expr)
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_DEFN;
@@ -156,12 +145,9 @@ EXPRPTR argnames,expr;
 	return(p);
 }
 
-EXPRPTR
-declnode(name,expr)
-char *name;
-EXPRPTR expr;
+EXPRPTR declnode(char *name, EXPRPTR expr)
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_DECL;
@@ -171,12 +157,9 @@ EXPRPTR expr;
 }
 
 
-EXPRPTR
-identlistnode(tail,name)
-EXPRPTR tail;
-char *name;
+EXPRPTR identlistnode(EXPRPTR tail,char *name)
 {
-	STRING calloc(),strsave();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_IDENTLISTNODE;
@@ -185,11 +168,9 @@ char *name;
 	return(p);
 }
 
-EXPRPTR
-listnode(tail,expr)
-EXPRPTR expr,tail;
+EXPRPTR listnode(EXPRPTR tail, EXPRPTR expr)
 {
-	STRING calloc();
+
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_LISTNODE;
@@ -202,7 +183,7 @@ EXPRPTR
 exprlist2(expr1,expr2)
 EXPRPTR expr1,expr2;
 {
-	STRING calloc();
+
 	EXPRPTR p1,p2;
 	p1 = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p2 = (EXPRPTR) calloc(1,sizeof(EXPR2));
@@ -215,6 +196,7 @@ EXPRPTR expr1,expr2;
 	return(p2);
 }
 
-yyerror(a)
-STRING a;
-{ fprintf(stderr,"%s\n",a); }
+void yyerror(STRING a)
+{
+  fprintf(stderr,"%s\n",a);
+}

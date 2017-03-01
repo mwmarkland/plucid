@@ -11,6 +11,10 @@
 EXPRPTR opnode(),wherenode(),defnode(),declnode(),varnode();
 EXPRPTR connode(),f_connode(),filenode();
 EXPRPTR identlistnode(),listnode();
+void pass4(EXPRPTR x);
+void yyerror(STRING a);
+int yylex();
+
 %}
 %%
 

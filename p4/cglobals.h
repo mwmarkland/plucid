@@ -1,3 +1,5 @@
+#include "y.tab.h"
+
 #define copy(x,y) x = y
 
 int ffcount,fflevel,funclevel,f_level[100],valoflevel,currentlevel;

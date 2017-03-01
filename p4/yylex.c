@@ -22,13 +22,20 @@ struct {
 	{"special",     F_SPECIAL},
 	{"file",        ERRFILE},
 };
+STRING getstring(char c);
+int lexgetc();
+STRING getword(char c);
+float getnum(char c);
+int keyfind(STRING s);
+int iswhite(char c);
+char is_sign(char c);
+void my_exit(int n);            /* main.o */
+STRING strsave( char *s);       /* main.o */
+void yyerror(STRING a);         /* expr.o */
 
-yylex()
+int yylex()
 {
 	int k;
-	STRING strsave();
-	STRING getstring(),getword();
-	float getnum();
 
 	while(iswhite(c=lexgetc()));
 	if ( (isalpha(c)||c=='@'||c=='_') && c!=EOF ) { s = getword(c);
@@ -47,14 +54,14 @@ yylex()
 	return(c);
 }
 
-lexgetc()
+int lexgetc()
 {
 	int c;
 	if(peekc!=0){
 		c = peekc;
 		peekc = 0;
 		return(c);
-	}else if (((int) c = getc(lexin))==EOF){
+	}else if ((c = getc(lexin))==EOF){
 	      if(in_index!=0){
 		      in_index--;
 		      lexin = in_files[in_index].in_fdes;
@@ -67,12 +74,11 @@ lexgetc()
       return(c);
 }
 
-STRING
-getword(c)
-char c;
-{       int l;
+STRING getword(char c)
+{
+  int l;
 	STRING p;
-	char is_sign();
+
 	p = buffer;
 	switch(c) {
 	case ';':
@@ -130,10 +136,10 @@ char c;
 
 
 
-char
-is_sign(c)
-char c;
-{ switch(c) {
+char is_sign(char c)
+
+{
+  switch(c) {
 	case ':':
 	case '^':
 	case '+':
@@ -150,66 +156,62 @@ char c;
      }
 }
 
-STRING
-getstring(c)
-char c;
+STRING getstring(char c)
 {
-	STRING p;
-	char strstrg[200];
-	int i,sptr,tlen;
-	p = buffer;
-	l = 0;
-	while ( c !='`' ) {
-		   if (c == '\\')  {  c = lexgetc();
-				      if (c==EOF) {
-			       yyerror("EOF reached with no closing quote for string"," ");
-				      my_exit(1); }
-				      switch (c) {
-				      default:
-						*p++ = '\\';
-						l++;
-				      case '\\':
-				      case '`':
-						break;
-				       }
-				   }
-		  switch(c){
-		   case '\t': *p++ = '\\'; l++;
-			      *p++ = 't';  l++;
-			      break;
-		   case '\f': *p++ = '\\'; l++;
-			      *p++ = 'f';  l++;
-			      break;
-		   case '\b': *p++ = '\\'; l++;
-			      *p++ = 'b';  l++;
-			      break;
-		   default : *p++ = c;
-			     l++;
-		 }
-		if (l == 255) {
-		fprintf(stderr,"WARNING long string\n");
-
-		 }
-
-		c  =  lexgetc();
-				      if (c==EOF) {
-			       yyerror("EOF reached with no closing quote for string", " "); my_exit(1); }
-		}
-		/* we are now at the end of the string */
-	*p = '\0';
-	return((STRING) strsave(buffer));
+  STRING p;
+  char strstrg[200];
+  int i,sptr,tlen;
+  p = buffer;
+  l = 0;
+  while ( c !='`' ) {
+    if (c == '\\')  {  c = lexgetc();
+      if (c==EOF) {
+        yyerror("EOF reached with no closing quote for string");
+        my_exit(1); }
+      switch (c) {
+        default:
+          *p++ = '\\';
+          l++;
+        case '\\':
+        case '`':
+          break;
+      }
+    }
+    switch(c){
+      case '\t': *p++ = '\\'; l++;
+        *p++ = 't';  l++;
+        break;
+      case '\f': *p++ = '\\'; l++;
+        *p++ = 'f';  l++;
+        break;
+      case '\b': *p++ = '\\'; l++;
+        *p++ = 'b';  l++;
+        break;
+      default : *p++ = c;
+        l++;
+    }
+    if (l == 255) {
+      fprintf(stderr,"WARNING long string\n");
+      
+    }
+    
+    c  =  lexgetc();
+    if (c==EOF) {
+      yyerror("EOF reached with no closing quote for string"); my_exit(1); }
+  }
+  /* we are now at the end of the string */
+  *p = '\0';
+  return(strsave(buffer));
 }
 
-float getnum(c)
-char c;
+float getnum(char c)
 {
 	int sign,mansum;
 	float expsum,expcount;
 	if ( c=='~' ) { sign = -1;
 			c = lexgetc();
 			if ( !isdigit(c) ) {
-				  yyerror("~ must be followed by a digit",
-					      " "); }
+				  yyerror("~ must be followed by a digit"); }
 	   } else sign = 1;
 	mansum = c - '0';
 	expsum = 0;
@@ -226,16 +228,14 @@ char c;
 		     peekc = c;
 		     return(sign*(mansum+expsum/expcount));
 }
-int
-keyfind(s)
-STRING s;
+int keyfind(STRING s)
 {
-	register int i;
-	for(i=0; i<NKEYWORDS && (strcmp(s,keywords[i].keyname)!=0); i++);
-	return(i);
+  register int i;
+  for(i=0; i<NKEYWORDS && (strcmp(s,keywords[i].keyname)!=0); i++);
+  return(i);
 }
 
-iswhite(c)
+int iswhite(char c)
 {
 	return(c==' ' || c=='\n' || c=='\t');
 }

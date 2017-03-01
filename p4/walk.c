@@ -6,19 +6,55 @@ int lcount = 0;
 int varcount= 0;
 int wherec = 0;
 
-pass4(x)
-EXPRPTR x;
-{ EXPRPTR remove_decls(),get_globals(),add_valof(),where_to_valof();
-  EXPRPTR remove_evalofs(),extract_file_filter();
-  output(
-	 extract_file_filter(remove_evalofs(
+void pass4(EXPRPTR x);
+EXPRPTR append(EXPRPTR e1,EXPRPTR e2);
+EXPRPTR extract_file_filter(EXPRPTR arg);
+EXPRPTR remove_evalofs(EXPRPTR arg);
+EXPRPTR new_valof(EXPRPTR e);
+EXPRPTR replace_ngs(EXPRPTR idlist,EXPRPTR e);
+EXPRPTR rremove(EXPRPTR e, EXPRPTR idlist);
+EXPRPTR remove_decls(EXPRPTR arg);
+EXPRPTR new_evalof(EXPRPTR e);
+EXPRPTR get_globals(EXPRPTR arg);
+EXPRPTR new_ng_nglobals(int type, EXPRPTR e);
+void export_nglobals();
+void add_used_list(EXPRPTR e);
+char is_defined(char *s);
+void add_defined_list(EXPRPTR e);
+void remove_formals();
+void add_formals(EXPRPTR e);
+void add_used(char *s);
+void add_defined(char *s);
+EXPRPTR mkwhere(EXPRPTR e);
+EXPRPTR where_to_valof(EXPRPTR arg);
+EXPRPTR add_valof(EXPRPTR e);
+char is_decl(EXPRPTR e);
+
+STRING strsave(char *s);        /* main.o */
+void output(EXPRPTR p);         /* main.o */
+int eqstring(STRING a,STRING b); /* main.o */
+EXPRPTR listnode(EXPRPTR tail, EXPRPTR expr); /* expr.o */
+EXPRPTR opnode(char *name,int argcount,EXPRPTR exprlist,EXPRPTR file); /* expr.o */
+EXPRPTR varnode(char *name,int argcount,EXPRPTR exprlist); /* expr.o */
+EXPRPTR defnode(char *name,int argcount,EXPRPTR argnames,EXPRPTR expr); /* expr.o */
+EXPRPTR valofnode(EXPRPTR exprlist); /* expr.o */
+EXPRPTR identlistnode(EXPRPTR tail,char *name); /* expr.o */
+EXPRPTR eglobnode(EXPRPTR namelist);            /* expr.o */
+EXPRPTR nglobnode(EXPRPTR namelist);            /* expr.o */
+EXPRPTR evalofnode(EXPRPTR exprlist);           /* expr.o */
+EXPRPTR wherenode(EXPRPTR expr,EXPRPTR exprlist); /* expr.o */
+EXPRPTR declnode(char *name, EXPRPTR expr);       /* expr.o */
+
+void pass4(EXPRPTR x)
+{ 
+  output(extract_file_filter(remove_evalofs(
 	 get_globals(remove_decls(add_valof(where_to_valof(x)))))));
 }
 
-EXPRPTR
-append(e1,e2)
-EXPRPTR e1,e2;
-{ EXPRPTR tmp,listnode();
+EXPRPTR append(EXPRPTR e1,EXPRPTR e2)
+
+{
+  EXPRPTR tmp;
   tmp = e1;
   if (e2==NULL) return(e1);
   if (e1==NULL) return(e2);
@@ -31,15 +67,12 @@ EXPRPTR e1,e2;
 }
 
 
-EXPRPTR
-extract_file_filter(arg)
-EXPRPTR arg;
+EXPRPTR extract_file_filter(EXPRPTR arg)
 {
-  EXPRPTR valofnode(),opnode(),defnode(),exprlist2(),listnode();
-  char is_decl(),name[40],*sv,*strsave();
+
+  char name[40],*sv;
   FFPTR s;
   EXPRPTR deflist,e,e1,e2,file,tmp;
-  EXPRPTR declnode(),varnode(),new_valof(),new_evalof();
   switch(arg->f){
   case F_OP:     file = arg->arg4.x;
 		 if (eqstring(arg->arg1.s,"file") ||
@@ -80,14 +113,11 @@ EXPRPTR arg;
   }
 }
 
-EXPRPTR
-remove_evalofs(arg)
-EXPRPTR arg;
+EXPRPTR remove_evalofs(EXPRPTR arg)
 {
-  EXPRPTR valofnode(),opnode(),defnode(),exprlist2(),listnode();
-  char is_decl(),name[30],*s;
+  char name[30],*s;
   EXPRPTR e,e1,e2,file;
-  EXPRPTR declnode(),varnode(),new_valof(),new_evalof();
+
   switch(arg->f){
   case F_OP:     file = arg->arg4.x;
 		 return(opnode(arg->arg1.s,arg->arg2.i,
@@ -111,10 +141,8 @@ EXPRPTR arg;
   }
 }
 
-EXPRPTR
-new_valof(e)
-EXPRPTR e;
-{ EXPRPTR replace_ngs(),valofnode(),listnode(),identlistnode();
+EXPRPTR new_valof(EXPRPTR e)
+{ 
   EXPRPTR glbs,tmp,dec,result,idlist,save;
   tmp = e;
   idlist = NULL;
@@ -136,10 +164,8 @@ EXPRPTR e;
   return(valofnode(result));
 }
 
-EXPRPTR
-replace_ngs(idlist,e)
-EXPRPTR idlist,e;
-{ EXPRPTR rremove(),valofnode(),listnode(),eglobnode(),defnode();
+EXPRPTR replace_ngs(EXPRPTR idlist,EXPRPTR e)
+{
   EXPRPTR glbs,tmp, result,dec,rem_t;
   result = NULL;
   tmp = e->arg1.x;
@@ -158,10 +184,10 @@ EXPRPTR idlist,e;
   return(defnode("_result",0,NULL,valofnode(append(glbs,result))));
 }
 
-EXPRPTR
-rremove(e,idlist)
-EXPRPTR e,idlist;
-{ EXPRPTR oldlist,newlist,nglobnode(),remlist;
+EXPRPTR rremove(EXPRPTR e, EXPRPTR idlist)
+
+{
+  EXPRPTR oldlist,newlist,remlist;
   char found,*s ;
   newlist = NULL;
   oldlist = e->arg1.x;
@@ -181,14 +207,10 @@ EXPRPTR e,idlist;
 
 
 
-EXPRPTR
-remove_decls(arg)
-EXPRPTR arg;
+EXPRPTR remove_decls(EXPRPTR arg)
 {
-  EXPRPTR valofnode(),opnode(),defnode(),exprlist2(),listnode();
-  char is_decl(),name[30],*s;
+  char name[30],*s;
   EXPRPTR e,e1,e2,file;
-  EXPRPTR declnode(),varnode(),new_evalof();
   switch(arg->f){
   case F_OP:     file = arg->arg4.x;
 		 return(opnode(arg->arg1.s,arg->arg2.i,
@@ -211,11 +233,10 @@ EXPRPTR arg;
   }
 }
 
-EXPRPTR
-new_evalof(e)
-EXPRPTR e;
-{ EXPRPTR evalofnode(),defnode(),valofnode(),listnode(),varnode();
-  EXPRPTR tmp,dec,ev_list,v_list,v_def,ev_def,remove_decls();
+EXPRPTR new_evalof(EXPRPTR e)
+{ 
+
+  EXPRPTR tmp,dec,ev_list,v_list,v_def,ev_def;
   char *s,name[30];
   tmp = e;
   ev_list = NULL;
@@ -238,21 +259,17 @@ EXPRPTR e;
   return(evalofnode(listnode(ev_list,ev_def)));
 }
 
-EXPRPTR
-get_globals(arg)
-EXPRPTR arg;
+EXPRPTR get_globals(EXPRPTR arg)
 {
-  EXPRPTR valofnode(),opnode(),defnode(),listnode();
-  EXPRPTR new_ng_nglobals();
   char name[30],*s;
   EXPRPTR e,e1,e2,file,tmp;
-  EXPRPTR declnode(),varnode();
   switch(arg->f){
   case F_OP:   file = arg->arg4.x;
 		 return(opnode(arg->arg1.s,arg->arg2.i,
 			get_globals(arg->arg3.x),file));
   case F_VAR:
-	       add_used(arg->arg1.s,funclevel);
+    /* MWM: add_used(arg->arg1.s,funclevel); */
+    add_used(arg->arg1.s);
 	       if (arg->arg2.i==0) return(arg);
 		 return(varnode(arg->arg1.s,arg->arg2.i,
 			 get_globals(arg->arg3.x)));
@@ -296,14 +313,10 @@ EXPRPTR arg;
   }
 }
 
-EXPRPTR
-new_ng_nglobals(type,e)
-int type;
-EXPRPTR e;
-{  EXPRPTR valofnode(),listnode(),nglobnode(),tmp,append(),evalofnode();
-   EXPRPTR identlistnode();
-   char is_defined();
-   if (valoflevel==1) return(valofnode(e));
+EXPRPTR new_ng_nglobals(int type, EXPRPTR e)
+{
+  EXPRPTR tmp;
+  if (valoflevel==1) return(valofnode(e));
    tmp = used_list[valoflevel];
    new_decls[valoflevel]=NULL;
    if (tmp!=NULL) {
@@ -324,61 +337,65 @@ EXPRPTR e;
    return(valofnode(tmp));
 }
 
-export_nglobals()
-{  valoflevel--;
+void export_nglobals()
+{
+  valoflevel--;
    add_used_list(new_decls[valoflevel+1]);
    valoflevel++;
 }
 
-add_used_list(e)
-EXPRPTR e;
-{ EXPRPTR tmp;
+void add_used_list(EXPRPTR e)
+{
+  EXPRPTR tmp;
   tmp = e;
   if ( tmp==NULL) return;
   add_used(tmp->arg2.s);
   while (tmp->arg1.x!=NULL){
-			     tmp=tmp->arg1.x;
-			     add_used(tmp->arg2.s);
-			   }
+    tmp=tmp->arg1.x;
+    add_used(tmp->arg2.s);
+  }
 }
 
-char
-is_defined(s)
-char *s;
-{ EXPRPTR tmp;
+char is_defined(char *s)
+{
+  EXPRPTR tmp;
   tmp = defined_list[valoflevel];
   if (tmp==NULL) return(false);
   if (eqstring(s,tmp->arg2.s)) return(true);
   while ( tmp->arg1.x!=NULL ) {
-			  tmp = tmp -> arg1.x;
-			  if (eqstring(s,tmp->arg2.s)) return(true);
-	      }
+    tmp = tmp -> arg1.x;
+    if (eqstring(s,tmp->arg2.s)) return(true);
+  }
   return(false);
 }
 
-add_defined_list(e)
-EXPRPTR e;
-{ EXPRPTR tmp;
+void add_defined_list(EXPRPTR e)
+{
+  EXPRPTR tmp;
   tmp = e;
   if ( tmp==NULL) return;
   add_defined(tmp->arg2.s);
   while (tmp->arg1.x!=NULL){
-			     tmp=tmp->arg1.x;
-			     add_defined(tmp->arg2.s);
-    }
+    tmp=tmp->arg1.x;
+    add_defined(tmp->arg2.s);
+  }
 }
 
-remove_formals()
-{ formals_list[valoflevel]=NULL ; }
+void remove_formals()
+{
+  formals_list[valoflevel]=NULL ;
+}
 
-add_formals(e)
-EXPRPTR e;
-{ formals_list[valoflevel]=e; }
+void add_formals(EXPRPTR e)
+
+{
+  formals_list[valoflevel]=e;
+}
 
 
-add_used(s)
-char *s;
-{ EXPRPTR tmp,identlistnode();
+void add_used(char *s)
+{
+  EXPRPTR tmp;
   tmp = formals_list[valoflevel];
   if ( tmp!=NULL) {
   if (eqstring(s,tmp->arg2.s)) return;
@@ -398,9 +415,9 @@ char *s;
   used_list[valoflevel]=identlistnode(used_list[valoflevel],s);
 }
 
-add_defined(s)
-char *s;
-{ EXPRPTR tmp,identlistnode();
+void add_defined(char *s)
+{
+  EXPRPTR tmp;
   tmp = defined_list[valoflevel];
   if (tmp==NULL) { defined_list[valoflevel]=identlistnode(NULL,s);
 		   return;}
@@ -412,10 +429,8 @@ char *s;
   defined_list[valoflevel]=identlistnode(defined_list[valoflevel],s);
 }
 
-EXPRPTR
-mkwhere(e)
-EXPRPTR e;
-{ EXPRPTR varnode(),listnode(),wherenode(),defnode();
+EXPRPTR mkwhere(EXPRPTR e)
+{ 
   char name[50];
   sprintf(name,"_%d",1000+varcount++);
   return(wherenode(varnode(name,0,NULL),
@@ -424,15 +439,11 @@ EXPRPTR e;
 	);
 }
 
-EXPRPTR
-where_to_valof(arg)
-EXPRPTR arg;
+EXPRPTR where_to_valof(EXPRPTR arg)
 {
-  EXPRPTR valofnode(),opnode(),defnode(),exprlist2(),listnode();
   char *s;
   EXPRPTR e,e1,e2,file;
-  EXPRPTR declnode(),varnode(),mkwhere();
-  char *strsave(),*res, name[100];
+  char *res, name[100];
   switch(arg->f){
   case F_OP:     file = arg->arg4.x;
 		 return(opnode(arg->arg1.s,arg->arg2.i,
@@ -460,10 +471,10 @@ EXPRPTR arg;
   }
 }
 
-EXPRPTR add_valof(e)
-EXPRPTR e;
-{  EXPRPTR file,declnode(),varnode(),listnode(),valofnode();
-   char *strsave(),is_decl(),*res,name[100];
+EXPRPTR add_valof(EXPRPTR e)
+{  
+  EXPRPTR file;
+  char *res,name[100];
    switch(e->f){
     case F_VAR:
 		 break;
@@ -484,9 +495,10 @@ EXPRPTR e;
    return(valofnode( listnode(NULL,defnode(res,0,NULL,e))));
 }
 
-char
-is_decl(e)
-EXPRPTR e;
-{ if (e->arg1.x==NULL) return(e->arg2.x->f==F_DECL);
+char is_decl(EXPRPTR e)
+{
+  if (e->arg1.x==NULL)
+    return(e->arg2.x->f==F_DECL);
+
   return(is_decl(e->arg1.x) || e->arg2.x->f==F_DECL);
 }
