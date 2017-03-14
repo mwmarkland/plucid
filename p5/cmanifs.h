@@ -1,7 +1,7 @@
-
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "y.tab.h"
 
 #define cycle   for(;;)
 #define NL      '\n'

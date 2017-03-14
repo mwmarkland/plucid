@@ -1,13 +1,20 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
-SYMPTR
-handle_ident(name,length)
-STRING name; char length;
+STRING strsave(char *s);        /* main.o */
+int hash(STRING s);
+int eqstring(STRING a, STRING b);
+void dumpsym(SYMPTR p);
+void dumpattr(SYMPTR p);
+void free_ident(SYMPTR p);
+SYMPTR glo_ident(STRING name,int length,char attr);
+SYMPTR find_ident(STRING name,int length);
+SYMPTR for_ident(STRING name,int length);
+void yyerror(STRING a);         /* expr.o */
+void yyerror2(STRING a,STRING b); /* expr.o */
+
+SYMPTR handle_ident(STRING name,char length)
 {
-	SYMPTR find_ident();
-	SYMPTR glo_ident();
-	SYMPTR for_ident();
 	switch(idusage){
 	case U_NORMAL:
 		return( find_ident(name,length) );
@@ -23,13 +30,9 @@ STRING name; char length;
 	}
 }
 
-SYMPTR
-find_ident(name,length)
-STRING name;
-char length;
+SYMPTR find_ident(STRING name,int length)
 {
-	STRING calloc();
-	STRING strsave();
+
 	SYMPTR scan;
 	SYMPTR new;
 	int i;
@@ -66,14 +69,9 @@ char length;
 }
 
 
-
-SYMPTR
-glo_ident(name,length,attr)
-STRING name;
-int length;
-char attr;
+
+SYMPTR glo_ident(STRING name,int length,char attr)
 {
-	STRING calloc();
 	SYMPTR scan, new,temp,prev;
 	int i;
 	char found;
@@ -83,7 +81,7 @@ char attr;
 	while(scan){
 		if(eqstring(scan->name,name)){
 			if(scan->lexlevel==lexlevel){
-			 yyerror(scan->name,
+			 yyerror2(scan->name,
 				 " already declared in this scope");
 				return(scan);
 			}else{
@@ -96,7 +94,7 @@ char attr;
 	}
 	if(!found){
 		if(lexlevel==1){
-			yyerror("no containing scope for %s\n",name);
+			yyerror2("no containing scope for %s\n",name);
 			return(scan);
 		}
 		new = (SYMPTR) calloc(1, sizeof(SYMBOL));
@@ -143,7 +141,7 @@ char attr;
 	 */
 	if( IS_USED(scan) ){
 		if( !(scan->attr&UELEM_A) != !(attr&ELEM_A) ){
-			yyerror("%s inherited inconsistently",name);
+			yyerror2("%s inherited inconsistently",name);
 		} else {  }
 		/*printf("%o, %o\n",scan->attr&UELEM_A,attr&ELEM_A); */
 	}else{
@@ -164,13 +162,8 @@ char attr;
 	return(new);
 }
 
-
-
-SYMPTR for_ident(name,length)
-STRING name;
-int length;
+SYMPTR for_ident(STRING name,int length)
 {
-	STRING calloc();
 	SYMPTR scan, new;
 	char found;
 	int i;
@@ -206,9 +199,7 @@ int length;
 		return(new);
 	}
 }
-
-eqstring(a,b)
-STRING a,b;
+int eqstring(STRING a, STRING b)
 {
 	while( *a++ == *b++ ){
 		if ( *a == '\0' && *b == '\0' ) {
@@ -218,8 +209,7 @@ STRING a,b;
 	return(0);
 }
 
-hash(s)
-STRING s;
+int hash(STRING s)
 {
 	int hashval;
 	/*fprintf(stderr,"####%s####",s); */
@@ -233,10 +223,9 @@ STRING s;
 }
 
 
-
-enter_phrase()
+
+void enter_phrase()
 {
-	STRING calloc();
 	P_STACKPTR temp;
 	SYMPTR new;
 	int i;
@@ -262,8 +251,7 @@ enter_phrase()
 	hashtable[i] = new;
 }
 
-EXPRPTR
-exit_phrase()
+EXPRPTR exit_phrase()
 {
 	P_STACKPTR old;
 	SYMPTR temp, scan;
@@ -315,10 +303,8 @@ exit_phrase()
 }
 
 
-
+void enter_function(){
 
-enter_function(){
-	STRING calloc();
 	F_STACKPTR new;
 
 	idusage = (int) U_FORMAL;
@@ -333,7 +319,7 @@ enter_function(){
 
 }
 
-exit_function()
+void exit_function()
 {
 	int i;
 	SYMPTR temp, scan;
@@ -367,31 +353,30 @@ exit_function()
 
 /* free the identifier symbol pointed to by p
  */
-free_ident(p)
-SYMPTR p;{
+void free_ident(SYMPTR p)
+{
 	free(p);
 }
 /* dump an identifiers information to the terminal
  */
-dumpsym(p)
-SYMPTR p;{
+void dumpsym(SYMPTR p)
+{
 	printf("name:%s, lexlevel:%d, idno:%d, \n",
 		p->name, p->lexlevel, p->idno);
 	dumpattr(p);
 }
 
-dumpattr(x)
-SYMPTR x;
+void dumpattr(SYMPTR x)
 {
-	if(x==NONE_A){
-		printf("No attributes\n");
-		return;
-	}
-	if( IS_DEF(x) ) printf("Defined ");
-	if( IS_GLOB(x) ) printf("Global ");
-	if( IS_LOCAL(x) ) printf("Local ");
-	if( IS_FORM(x) ) printf("Formal ");
-	if( IS_ELEM(x) ) printf("Elementary ");
-	if( IS_USED(x) ) printf("Used Before as Glob");
-	printf("\n");
+  if(x==NONE_A){
+    printf("No attributes\n");
+    return;
+  }
+  if( IS_DEF(x) ) printf("Defined ");
+  if( IS_GLOB(x) ) printf("Global ");
+  if( IS_LOCAL(x) ) printf("Local ");
+  if( IS_FORM(x) ) printf("Formal ");
+  if( IS_ELEM(x) ) printf("Elementary ");
+  if( IS_USED(x) ) printf("Used Before as Glob");
+  printf("\n");
 }

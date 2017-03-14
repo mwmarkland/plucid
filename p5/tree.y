@@ -13,6 +13,15 @@ EXPRPTR varnode();
 EXPRPTR sconsnode(),connode(),f_connode(),filenode();
 EXPRPTR binnode(),unode(),ternode();
 EXPRPTR exit_phrase();
+int yylex();
+int findword(STRING s);                /* yylex.o */
+void pushexpr();                       /* expr.o */
+void enter_phrase();                   /* ident.o */
+void enter_function();                 /* ident.o */
+void define(SYMPTR s, EXPRPTR e);      /* expr.o */
+void exit_function();                  /* ident.o */
+void appeexpr(EXPRPTR e);              /* expr.o */
+void yyerror(STRING s);
 %}
 %%
 

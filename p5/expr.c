@@ -1,8 +1,18 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
-findfile(e)
-EXPRPTR e;
+void yyerror(STRING a)
+{ fprintf(stderr,"%s\n",a); }
+
+void yyerror2(STRING a,STRING b)
+{ fprintf(stderr,"%s%s\n",a,b); }
+
+void my_exit(int n);            /* main.o */
+STRING strsave(char *s);        /* main.o */
+void echoexpr(EXPRPTR p);       /* main.o */
+void defineparms();
+
+int findfile(EXPRPTR e)
 {
 	if (filecount >= MAXFILES)
 	   { fprintf(stderr,"too many cxfiles\n"); my_exit(1); }
@@ -11,12 +21,8 @@ EXPRPTR e;
 	return(filecount-1);
 }
 
-EXPRPTR
-filenode(filename,first_line,last_line,cursor_position)
-int filename;
-int first_line,last_line,cursor_position;
+EXPRPTR filenode(int filename,int first_line,int last_line,int cursor_position)
 {
-	STRING calloc(),strsave();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(Q_EXPR));
 	p->dim = 0;
@@ -28,21 +34,16 @@ int first_line,last_line,cursor_position;
 	return(p);
 }
 
-EXPRPTR
-sconsnode(s,file)
-EXPRPTR file;
-char *s;
-{ EXPRPTR unode(),binnode(),connode();
+EXPRPTR sconsnode(char *s,EXPRPTR file)
+{
+  EXPRPTR unode(),binnode(),connode();
   if(s[0] == '\0')       return(binnode(F_SCONS,0,connode(F_SWCHAR,s[0]),unode(F_NIL,0,NULL),file));
   return(binnode(F_SCONS,0,connode(F_SWCHAR,s[0]),
 	   sconsnode((char *)&s[1],file),file));
 }
 
-EXPRPTR
-connode(f,n)
-int f,n;
+EXPRPTR connode(int f,int n)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(U_EXPR));
 	p->dim = 0;
@@ -51,11 +52,8 @@ int f,n;
 	return(p);
 }
 
-EXPRPTR
-f_connode(n)
-float n;
+EXPRPTR f_connode(float n)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(U_EXPR));
 	p->dim = 0;
@@ -64,12 +62,8 @@ float n;
 	return(p);
 }
 
-EXPRPTR
-varnode(type,v)
-int type;
-SYMPTR v;
+EXPRPTR varnode(int type, SYMPTR v)
 {
-	STRING calloc();
 	EXPRPTR p;
 	F_STACKPTR f_env;
 	int i, placepop, timepop;
@@ -132,9 +126,8 @@ SYMPTR v;
 	return(p);
 }
 
-pushexpr()
+void pushexpr()
 {
-	STRING calloc();
 	E_STACKPTR temp;
 	/* push the location of the new expression list onto parm_stack */
 	temp = (E_STACKPTR) calloc(1, sizeof(E_STACK));
@@ -143,10 +136,9 @@ pushexpr()
 	parm_stack = temp;
 }
 
-appeexpr(e)
-EXPRPTR e;
+void appeexpr(EXPRPTR e)
 {
-	STRING calloc();
+
 	E_LISTPTR new;
 	new = (E_LISTPTR) calloc(1,sizeof(E_LIST));
 	new->el_expr = e;
@@ -155,9 +147,9 @@ EXPRPTR e;
 	parm_list = new;
 }
 
-defineparms()
+void defineparms()
 {
-	STRING calloc();
+
 	E_LISTPTR scan, temp;
 	int flag;
 
@@ -194,13 +186,9 @@ defineparms()
 	parm_stack = parm_stack->es_tl;
 	free(temp);
 }
-
-EXPRPTR unode(f,n,a,file)
-int f,n;
-EXPRPTR a;
-EXPRPTR file;
+
+EXPRPTR unode(int f,int n,EXPRPTR a,EXPRPTR file)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(B_EXPR));
 	p->f = (FUNCTION) f;
@@ -210,13 +198,8 @@ EXPRPTR file;
 	return(p);
 }
 
-EXPRPTR
-binnode(f,n,a,b,file)
-int f,n;
-EXPRPTR a, b;
-EXPRPTR file;
+EXPRPTR binnode(int f,int n,EXPRPTR a,EXPRPTR b,EXPRPTR file)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(T_EXPR));
 	p->f = (FUNCTION) f;
@@ -228,13 +211,8 @@ EXPRPTR file;
 	return(p);
 }
 
-EXPRPTR
-ternode(f,n,b,c,d,file)
-int f,n;
-EXPRPTR b,c,d;
-EXPRPTR file;
+EXPRPTR ternode(int f,int n,EXPRPTR b,EXPRPTR c,EXPRPTR d,EXPRPTR file)
 {
-	STRING calloc();
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(Q_EXPR));
 	p->f =  (FUNCTION) f;
@@ -246,21 +224,17 @@ EXPRPTR file;
 	return(p);
 }
 
-define(s,e)
-SYMPTR s;
-EXPRPTR e;
+void define(SYMPTR s, EXPRPTR e)
 {
-	STRING calloc();
-	STRING strsave();
 	 int flag;
 	 flag=1;
 	if(s->attr&DEF_A){
-		yyerror(s->name,"is already defined");
+		yyerror2(s->name,"is already defined");
 	}else if(s->attr&GLOB_A){
 		 /*
 		  * inheriting and trying to redefine it
 		  */
-		yyerror(s->name," cannot be defined here");
+          yyerror2(s->name," cannot be defined here");
 	}else{
 		exprtable[s->idno] = e;
 		nametable[s->idno] = strsave(s->name);
@@ -273,6 +247,3 @@ fprintf(stderr,"defining %s, level %d idno %d as:",s->name, s->lexlevel, s->idno
 	}
 }
 
-yyerror(a,b)
-STRING a,b;
-{ fprintf(stderr,"%s%s\n",a,b); }

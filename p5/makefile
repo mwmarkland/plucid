@@ -1,13 +1,22 @@
+CC = gcc
 R=
 DESTDIR=/usr/local/bin
-CFLAGS=-g -DYYMAXDEPTH=900
+CPPFLAGS=-DYYMAXDEPTH=900
+# gnu99 due to putw() use.
+CFLAGS=-std=gnu99 -fdiagnostics-color=never 
+LDFLAGS=-static
+
+
 LINT= lint -p
 TAR= tar -cv
 PRINT= pr -t $1 | cat -n
 inc = cmanifs.h cglobals.h
 
+%.o : %.c cglobals.h cmanifs.h y.tab.h
+	$(CC) -c -I. $(CPPFLAGS) $(CFLAGS) $< -o $@
+
 pass5: main.o y.tab.o yylex.o expr.o ident.o;
-	cc -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
+	$(CC) $(LDFLAGS) -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
 
 cp install:
 	cp pass5 $R$(DESTDIR)/pass5
@@ -31,14 +40,5 @@ all:    main.o y.tab.o yylex.o expr.o ident.o ;
 	cp pass5 $R$(DESTDIR)/pass5
 	rm -f *.o y.tab.h y.tab.c pass5
 
-.c.o:
-	cc -c -g $<
-
-main.o: $(inc) main.c
-cmanifs.h: y.tab.h
 y.tab.c y.tab.h: tree.y
 	yacc -d tree.y
-y.tab.o: $(inc) y.tab.h y.tab.c
-yylex.o: $(inc) yylex.c
-expr.o: $(inc) expr.c
-ident.o: $(inc) ident.c
