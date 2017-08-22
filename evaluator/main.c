@@ -1,13 +1,37 @@
 #include "imanifs.h"
 #include "iglobals.h"
 
-main(argc,argv)
-int argc;
-char **argv;
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+void hiaton();                  /* input.c */
+void dumpval(FILE *stream,VALUEPTR x); /* dump.c */
+STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
+STPPTR ssearch(COORDS hd);                          /* memory.c */
+STRING strsave(char *s);                            /* input.c */
+void initspace();                                   /* dynamic.c */
+void dumpt(STPPTR x);                               /* dump.c */
+void my_exit(int n);                                /* dump.c */
+
+
+
+void rupture();
+void initialise(int argc,char *argv[]);
+int testfile(STRING p);
+EXPRPTR readexpr(int i);
+void elaborate(int n,COORDS xyz,int e_time);
+void usage();
+void echoexpr(EXPRPTR p);
+
+  
+int main(int argc,char *argv[])
 {
 	int i,t1,j,udc1,ldc1,udc2,ldc2,udc3,ldc3;
 	COORDS xyz;
-	extern rupture(),hiaton();
+	/* extern rupture(),hiaton(); */
 	char ok_to_print,dimension_err;
 	memargc = argc;
 	memargv = argv;
@@ -136,16 +160,15 @@ if (i==t1) break;
 }
 
 
-initialise(argc,argv)
-int argc;
-char **argv;
+void initialise(int argc,char *argv[])
 {
 
-	STRING strsave(),calloc();
-	EXPRPTR readexpr();
+	/* STRING strsave(),calloc(); */
+	/* EXPRPTR readexpr(); */
 	int i, num, k,nwords;
-	STRING p,code_to_char();
-	int  buffer[500];
+	STRING p;
+        /* STRING code_to_char(); */
+	char  buffer[500];
 	int flag;
 
 
@@ -245,7 +268,7 @@ char **argv;
 	exprtable = (EXPRPTR *) calloc(exprquan, sizeof(EXPRPTR));
 	for(i=0;i<exprquan;i++){
 		for(p=(char *)buffer; (*p=fgetc(infile))!='\n'; p++);
-		*p = NULL;
+		*p = '\0'; /* not NULL */
 		nametable[i] = strsave(buffer);
 		exprtable[i] = readexpr(i);
 		if (dflag){ 
@@ -269,7 +292,7 @@ char **argv;
 			p++; 
 		};
 		fgetc(infile);
-		*p = NULL;
+		*p = '\0'; /* NULL;*/
 		wordtable[i] = strsave(buffer);
 	}
 	fclose(infile);
@@ -320,8 +343,7 @@ char **argv;
 
 }
 
-testfile(p)
-STRING p;
+int testfile(STRING p)
 {
 	int j;
 	for(j=0; p[j]; j++);
@@ -329,9 +351,7 @@ STRING p;
 }
 
 
-EXPRPTR
-readexpr(i)
-int i;
+EXPRPTR readexpr(int i)
 {
 	int n,temp;
 	EXPRPTR new;
@@ -388,11 +408,9 @@ int i;
 }
 
 
-elaborate(n,xyz,e_time)
-register int n, e_time;
-COORDS xyz;
+void elaborate(int n,COORDS xyz,int e_time)
 {
-	STPPTR ssearch(),stpsearch();
+	/* STPPTR ssearch(),stpsearch(); */
 	rSTPPTR s,t;
 	outside = t = stpsearch((long)e_time,
 	(STPPTR)NULL,thashtab);
@@ -409,14 +427,13 @@ COORDS xyz;
 	(*ftable[exprtable[n]->f].apply)(exprtable[n]);
 }
 
-usage()
+void usage()
 {
 	fprintf(stderr,"usage: fluval [-d] [-c] [-s] [-t?] <fname.i>\n");
 	my_exit(1);
 }
 
-echoexpr(p)
-EXPRPTR p;
+void echoexpr(EXPRPTR p)
 {
 	FPTR q;
 	int n,dim;
