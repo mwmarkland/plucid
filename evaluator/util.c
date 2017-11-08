@@ -1,11 +1,6 @@
 #include "imanifs.h"
 #include "iglobals.h"
-error(x,y,type,val)
-int type;
-CELLUNION val;
-STRING x;
-EXPRPTR y;
-
+void error(STRING x,EXPRPTR y,int type,CELLUNION val)
 {       
 	int i;
 	if  (!tflags[9]) {  

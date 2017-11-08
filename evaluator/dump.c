@@ -325,7 +325,7 @@ WORDCELL value;
 }
 
 
-dumpval(stream,x)
+void dumpval(stream,x)
 FILE *stream;
 VALUEPTR x;
 {       
@@ -525,9 +525,7 @@ FILE *channel;
 	}
 }
 
-dumpval2(stream,x)
-FILE *stream;
-VALUE x;
+void dumpval2(FILE *stream,VALUE x)
 {       
 	int crcint;
 	float rlval;

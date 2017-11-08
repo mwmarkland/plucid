@@ -2,6 +2,7 @@
 
 #include "imanifs.h"
 #include "iglobals.h"
+#include <unistd.h>
 
 #define needed(x) (((*x)->data.bits.g_mark)<= retvec[(*x)->data.bits.n])
 
@@ -17,7 +18,7 @@ int sfound,bfound;
 initspace()
 {       
 	int i,rage;
-	char  *sbrk(), *morefrees();
+	char *morefrees();
 	dynasizes[0] = 24;
 	dynasizes[1] = 36;
 	rage = 1;
@@ -40,9 +41,7 @@ initspace()
 	free_bigs.sp =  morefrees(b_recquan,BIG_RECORD);
 }
 
-char *
-alloc(size)
-int size;
+char * alloc(size)
 {
 	SPACEITEM x;
 	SPACEITEM *freeptr, newptr;

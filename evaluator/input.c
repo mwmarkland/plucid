@@ -1,6 +1,20 @@
 #include "imanifs.h"
 #include "iglobals.h"
 
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+#include "protos.h"
+
+void killspace();
+int findword(STRING s);
+int getword2(char c);
+char * alloc(size);             /* dynamic.c */
+void dumpval2(FILE *stream,VALUE x); /* dump.c */
+  
+void error(STRING x,EXPRPTR y,int type,CELLUNION val); /* util.c */
+
 /*
  *      all code for input to the interpreter is local to this file
  */
@@ -10,8 +24,7 @@ int inlist = DOTTED_PAIR;
 int read_err,readerr,buffer[200];
 
 
-f_arg(e)
-EXPRPTR e;
+void f_arg(EXPRPTR e)
 {  
 	int val;
 	STRING code_to_char();
@@ -54,9 +67,8 @@ EXPRPTR e;
     signal(SIGALRM,hiaton);
 }*/
 
-hiaton()
+void hiaton()
 {   
-	extern rupture();
 	EXPRPTR e;
 	STPPTR s,t,p;
 	IOPTR save_io;
@@ -287,9 +299,8 @@ CELLUNION *v;
 	}
 }
 
-int
-findword(s)
-STRING s;
+int findword(STRING s)
+
 {
 	int i;
 	STRING ngc_strsave();
@@ -441,9 +452,7 @@ int c;
 }
 
 
-int
-getword2(c)
-char c;
+int getword2(char c)
 {       
 	int l;
 	STRING p;
@@ -743,7 +752,7 @@ readword()
 	return(i);
 }
 
-killspace()
+void killspace()
 {       
 	int mygetchar();
 	if (ch == EOF ) return;
@@ -753,21 +762,17 @@ killspace()
 	}
 }
 
-STRING
-strsave(s)
-char *s; 
+STRING strsave(char *s)
 {
 	int n;
-	char *p, *calloc();
+	char *p;
 	n = strlen(s);
 	if ((p = calloc(1,n+1))!=NULL)
 		strcpy(p,s);
 	return((STRING) p);
 }
 
-STRING
-ngc_strsave(s)
-char *s; 
+STRING ngc_strsave(char *s) 
 {
 	int n;
 	char *p, *ngc_calloc();

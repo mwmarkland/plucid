@@ -1,11 +1,25 @@
 #include "imanifs.h"
 #include "iglobals.h"
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+void my_exit(int n);                                /* dump.c */
+void dumps(STPPTR x);                /* dumps.c */
+STRING formstring(char *,CELLPTR);   /* string.c */
+STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
+char memsearch(MEMPTR *place, int n, STPPTR s, STPPTR t, STPPTR p); /* memory.c */
+void dumpt(STPPTR x);           /* dump.c */
+
+int read_c_item(CELLUNION *v);  /* input.c */
+int read_p_item(CELLUNION *v);  /* input.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+
+
+
 IOPTR
-get_io_item(type,e,space,time,place)
-int type;
-EXPRPTR e;
-STPPTR space,time,place;
+get_io_item(int type,EXPRPTR e,STPPTR space,STPPTR time,STPPTR place)
 { 
 	char *ngc_calloc();
 	IOPTR s;
@@ -35,9 +49,7 @@ STPPTR space,time,place;
 	return(s);
 }
 
-f_input(e)
-rEXPRPTR e;
-
+void f_input(rEXPRPTR e)
 {
 	MEMPTR memplace;
 	int i;
@@ -99,20 +111,18 @@ rEXPRPTR e;
 }
 
 
-f_filter(e)
-rEXPRPTR e;
-
+void f_filter(rEXPRPTR e)
 {
 	MEMPTR memplace;
 	VALUE x;
 	int i,iox,ii;
-	STPPTR t1,stpsearch(),s,t,p,s1,p1,ss,tt,pp;
+	STPPTR t1,s,t,p,s1,p1,ss,tt,pp;
 	int pipe_a[2],pipe_b[2];
 	int *iostring,found,sx[100],ops[20];
-	STRING formstring();
+
 	FILE *tin,*tout;
 	int tinx,tch,save_ch,savei;
-	IOPTR m,get_io_item(),save_io;
+	IOPTR m,save_io;
 	s = STPSs;
 	t = STPSt;
 	p = STPSp;
@@ -256,8 +266,7 @@ rEXPRPTR e;
 }
 
 
-f_now(e)
-rEXPRPTR e;
+void f_now(rEXPRPTR e)
 {  
 	int time;
 	time = STPSt->stphd.word;
@@ -267,8 +276,7 @@ rEXPRPTR e;
 }
 
 
-f_first(e)
-rEXPRPTR e;
+void f_first(rEXPRPTR e)
 {
 	rSTPPTR s, t, p;
 	STPPTR stpsearch();
@@ -282,8 +290,7 @@ rEXPRPTR e;
 }
 
 
-f_prev(e)
-rEXPRPTR e;
+void f_prev(rEXPRPTR e)
 {
 	rSTPPTR  s, t, p;
 	STPPTR stpsearch();
@@ -296,8 +303,7 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_next(e)
-rEXPRPTR e;
+void f_next(rEXPRPTR e)
 {
 	rSTPPTR  s, t, p;
 	STPPTR stpsearch();
@@ -310,8 +316,7 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_before(e)
-rEXPRPTR e;
+void f_before(rEXPRPTR e)
 {
 	STPPTR stpsearch();
 	rSTPPTR s, t, p;
@@ -330,8 +335,7 @@ rEXPRPTR e;
 	}
 }
 
-f_fby(e)
-rEXPRPTR e;
+void f_fby(rEXPRPTR e)
 {
 	STPPTR stpsearch();
 	rSTPPTR s, t, p;
@@ -351,8 +355,7 @@ rEXPRPTR e;
 }
 
 
-f_asa(e)
-EXPRPTR e;
+void f_asa(EXPRPTR e)
 {
 	STPPTR stpsearch();
 	rSTPPTR s, t, p;
@@ -399,8 +402,7 @@ EXPRPTR e;
 	}
 }
 
-f_attime(e)
-rEXPRPTR e;
+void f_attime(rEXPRPTR e)
 {  
 	int type;
 	CELLUNION value;

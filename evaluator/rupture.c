@@ -3,7 +3,7 @@
 int lu_time;
 int rupturelevel = 0;
 char rp_ch;
-rupture()
+int rupture()
 {
 	int num;
 	char *gets(), input[80],ch;

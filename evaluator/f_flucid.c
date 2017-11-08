@@ -1,13 +1,16 @@
 #include "imanifs.h"
 #include "iglobals.h"
 
-f_elt(e)
-rEXPRPTR e;
+#include <stdlib.h>
+void my_exit(int n);                                /* dump.c */
+STPPTR ssearch (COORDS hd);     /* memory.c */
+STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
+void error(STRING x,EXPRPTR y,int type,CELLUNION val); /* util.c */
+void f_elt(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int time,tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -35,13 +38,11 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_all(e)
-rEXPRPTR e;
+void f_all(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch(),stpsearch();
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -69,13 +70,11 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_original(e)
-rEXPRPTR e;
+void f_original(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -100,13 +99,11 @@ rEXPRPTR e;
 
 
 
-f_succ(e)
-rEXPRPTR e;
+void f_succ(rEXPRPTR e)
 {
 	COORDS xyz;
 	rSTPPTR s, t, p;
 	int dim;
-	STPPTR ssearch();
 	dim=e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -130,13 +127,12 @@ rEXPRPTR e;
 
 
 
-f_nrest(e)
-rEXPRPTR e;
+void f_nrest(rEXPRPTR e)
 {
 	COORDS xyz;
 	rSTPPTR s, t, p;
 	int dim;
-	STPPTR ssearch();
+
 	dim=e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -158,13 +154,12 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_rest(e)
-rEXPRPTR e;
+void f_rest(rEXPRPTR e)
 {
 	COORDS xyz;
 	rSTPPTR s, t, p;
 	int dim;
-	STPPTR ssearch();
+
 	dim = e -> dim;
 	s = STPSs;
 	t = STPSt;
@@ -179,13 +174,12 @@ rEXPRPTR e;
 
 
 
-f_beside(e)
-rEXPRPTR e;
+void f_beside(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -235,19 +229,17 @@ rEXPRPTR e;
 		my_exit(1);
 	}
 }
-f_aby(e)
-rEXPRPTR e;
+void f_aby(rEXPRPTR e)
 {
 
 }
 
-f_ncby(e)
-rEXPRPTR e;
+void f_ncby(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -304,13 +296,11 @@ rEXPRPTR e;
 	}
 }
 
-f_initial(e)
-rEXPRPTR e;
+void f_initial(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -332,13 +322,12 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_noriginal(e)
-rEXPRPTR e;
+void f_noriginal(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -361,13 +350,12 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_rshift(e)
-rEXPRPTR e;
+void f_rshift(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -382,14 +370,13 @@ rEXPRPTR e;
 }
 
 
-f_lshift(e)
-rEXPRPTR e;
+void f_lshift(rEXPRPTR e)
 {
 
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -404,13 +391,12 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_swap(e)
-rEXPRPTR e;
+void f_swap(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -458,13 +444,12 @@ rEXPRPTR e;
 	STPSpop;
 }
 
-f_nsby(e)
-rEXPRPTR e;
+void f_nsby(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -515,13 +500,12 @@ rEXPRPTR e;
 	}
 }
 
-f_sby(e)
-rEXPRPTR e;
+void f_sby(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -572,13 +556,12 @@ rEXPRPTR e;
 	}
 }
 
-f_cby(e)
-rEXPRPTR e;
+void f_cby(rEXPRPTR e)
 {
 	COORDS  xyz;
 	int tmp,dim;
 	rSTPPTR s, t, p;
-	STPPTR ssearch();
+
 	dim = e->dim;
 	s = STPSs;
 	t = STPSt;
@@ -633,14 +616,13 @@ rEXPRPTR e;
 }
 
 
-f_atspace(e)
-rEXPRPTR e;
+void f_atspace(rEXPRPTR e)
 {  
 	int type;
 	COORDS xyz;
 	CELLUNION value;
 	rSTPPTR s,t,p;
-	STPPTR ssearch();
+
 	int tmp,dim;
 	dim = e->dim;
 	s = STPSs;
@@ -688,10 +670,9 @@ rEXPRPTR e;
 	}
 }
 
-f_whr(e)
-EXPRPTR e;
+void f_whr(EXPRPTR e)
 {
-	STPPTR ssearch(),stpsearch();
+
 	rSTPPTR s, t, p;
 	register int i;
 	COORDS xyz;
@@ -747,8 +728,7 @@ EXPRPTR e;
 	}
 }
 
-f_even(e)
-rEXPRPTR e;
+void f_even(rEXPRPTR e)
 {  
 	COORDS  space;
 	int tmp,dim;
@@ -769,8 +749,7 @@ rEXPRPTR e;
 }
 
 
-f_odd(e)
-rEXPRPTR e;
+void f_odd(rEXPRPTR e)
 {  
 	COORDS  space;
 	int tmp,dim;
@@ -790,8 +769,7 @@ rEXPRPTR e;
 	}
 }
 
-f_toggle(e)
-rEXPRPTR e;
+void f_toggle(rEXPRPTR e)
 {  
 	COORDS  space;
 	int tmp,dim;
@@ -811,8 +789,7 @@ rEXPRPTR e;
 	}
 }
 
-f_here(e)
-rEXPRPTR e;
+void f_here(rEXPRPTR e)
 {  
 	COORDS  space;
 	int tmp,dim;
@@ -832,13 +809,12 @@ rEXPRPTR e;
 	}
 }
 
-f_pred(e)
-rEXPRPTR e;
+void f_pred(rEXPRPTR e)
 {
 	COORDS xyz;
 	rSTPPTR s, t, p;
 	int dim;
-	STPPTR ssearch();
+
 	dim=e->dim;
 	s = STPSs;
 	t = STPSt;

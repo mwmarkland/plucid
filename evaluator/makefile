@@ -1,14 +1,17 @@
+CC=gcc
 R=
 DESTDIR=/usr/local/bin
-CFLAGS= -g 
+CFLAGS= -g -std=c99 -fdiagnostics-color=never
+CPPFLAGS=-D_POSIX_C_SOURCE -D_XOPEN_SOURCE
+LDFLAGS=-static
 LINT= lint -p
 TAR= tar -cv
 mac = imanifs.h iglobals.h
 
 luval: main.o f_flucid.o input.o dynamic.o util.o \
-		      dump.o rupture.o memory.o f_decls.o \
-		      f_alg.o f_lucid.o f_vars.o string.o list.o real.o
-	cc  $(CFLAGS) main.o f_flucid.o memory.o input.o dynamic.o \
+       dump.o rupture.o memory.o f_decls.o \
+       f_alg.o f_lucid.o f_vars.o string.o list.o real.o
+	$(CC)  $(CFLAGS) $(LDFLAGS) main.o f_flucid.o memory.o input.o dynamic.o \
 		util.o dump.o rupture.o f_decls.o f_alg.o \
 		f_lucid.o f_vars.o string.o real.o list.o -lm \
 		-o luval
