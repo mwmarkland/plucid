@@ -10,7 +10,7 @@
 void killspace();
 int findword(STRING s);
 int getword2(char c);
-char * alloc(size);             /* dynamic.c */
+char * alloc(int size);             /* dynamic.c */
 void dumpval2(FILE *stream,VALUE x); /* dump.c */
   
 void error(STRING x,EXPRPTR y,int type,CELLUNION val); /* util.c */

@@ -67,7 +67,7 @@ DISPLAYPTR d_top;
 
 #define STPSIZE  6000
 #define         STPStop          stp_top
-#define STPSpush { if(stp_top+1>&stp_stack[0]+2*STPSIZE) { printf("stp_stack overflow\n");  my_exit(1); } stp_top++; }
+#define STPSpush { if(stp_top+1>&stp_stack[0]+2*STPSIZE) { printf("stp_stack overflow\n");  exit(1); } stp_top++; }
 #define         STPSpop          stp_top--
 #define         STPSt            stp_top->stp_t
 #define         STPSp            stp_top->stp_p

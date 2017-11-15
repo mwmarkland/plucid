@@ -2,7 +2,7 @@ CC=gcc
 R=
 DESTDIR=/usr/local/bin
 CFLAGS= -g -std=c99 -fdiagnostics-color=never
-CPPFLAGS=-D_POSIX_C_SOURCE -D_XOPEN_SOURCE
+CPPFLAGS=-D_POSIX_C_SOURCE -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
 LDFLAGS=-static
 LINT= lint -p
 TAR= tar -cv

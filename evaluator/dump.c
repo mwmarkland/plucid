@@ -569,9 +569,7 @@ void dumpval2(FILE *stream,VALUE x)
 	}
 }
 
-dumplist(x,channel)
-CELLPTR x;
-int channel;
+void dumplist(CELLPTR x,int channel)
 {       
 	float rlval;
 	int crcint;
@@ -684,7 +682,7 @@ char flag;
 	}
 }
 
-dumphashes()
+void dumphashes()
 {
 	int i;
 	/*
