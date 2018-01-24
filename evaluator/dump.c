@@ -2,10 +2,20 @@
 #include "iglobals.h"
 #include <sys/types.h>
 #include <sys/times.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+
+void stats();
+int dump_getc(FILE *readfile,char *filename);
+void dumpmem(MEMPTR x);
+void dumpword(int x,FILE *channel);
+void dumpstring(CELLPTR x,FILE *channel,char flag);
+void dumplist(CELLPTR x,FILE *channel);
+
 char charcode[5];
 
-bar(x)
-int x;
+void bar(int x)
 { 
 	int i;
 	if (x>80) { 
@@ -16,8 +26,7 @@ int x;
 	}
 }
 
-dump_uctable(s)
-char *s;
+void dump_uctable(char *s)
 {  
 	int i;
 	FILE *ucout;
@@ -35,8 +44,7 @@ char *s;
 	}
 }
 
-my_exit(n)
-int n;
+void my_exit(int n)
 {   
 	if (isatty(fileno(stdout))){
 		stats(); 
@@ -45,14 +53,13 @@ int n;
 	exit(2);
 }
 
-dumpspaces(n)
-int n;
+void dumpspaces(int n)
 { 
 	int i;
 	for (i=0; i<n; i++) fprintf(stderr," "); 
 }
 
-stats()
+void stats()
 {   
 	struct tms buff;
 	time_t syst,ut;
@@ -93,9 +100,7 @@ stats()
 	    ,stpcount);
 }
 
-dumpfile(x,e)
-char *x;
-EXPRPTR e;
+void dumpfile(char *x,EXPRPTR e)
 {  
 	int i,lineno,firstline,lastline,cursorposition;
 	char ch,*filename;
@@ -129,9 +134,7 @@ EXPRPTR e;
 	fclose(readfile);
 }
 
-dump_getc(readfile,filename)
-FILE *readfile;
-char *filename;
+int dump_getc(FILE *readfile,char *filename)
 {
 	int ch;
 	ch = getc(readfile);
@@ -143,14 +146,13 @@ char *filename;
 	return(ch);
 }
 
-dumpstp(x)
-STPPTR x;
+void dumpstp(STPPTR x)
 {
 	STPPTR s;
 	fprintf(stderr,"(");
 	s = x;
 	while( s!=NULL ){
-		fprintf(stderr,"%d",s->stphd.word);
+		fprintf(stderr,"%ld",s->stphd.word);
 		s = s->stptl;
 		if( s!=NULL ){
 			fprintf(stderr,",");
@@ -158,8 +160,8 @@ STPPTR x;
 	}
 	fprintf(stderr,")");
 }
-dumps(x)
-STPPTR x;
+
+void dumps(STPPTR x)
 {
 	STPPTR s;
 	fprintf(stderr,"(");
@@ -176,19 +178,16 @@ STPPTR x;
 	fprintf(stderr,")");
 }
 
-dumpt(x)
-STPPTR x;
+void dumpt(STPPTR x)
 {
 	fprintf(stderr,"(");
-	fprintf(stderr,"%3d",x->stphd.word);
+	fprintf(stderr,"%3ld",x->stphd.word);
 	fprintf(stderr,")");
 }
 
 
 
-dumpstphash(i,table)
-int i;
-STPPTR table[];
+void dumpstphash(int i,STPPTR table[])
 {
 	STPPTR p;
 	fprintf(stderr,"Bucket %d ",i);
@@ -197,8 +196,8 @@ STPPTR table[];
 	}
 	fprintf(stderr,"\n");
 }
-dumpnhash(i)
-int i;
+
+void dumpnhash(int i)
 {
 	register MEMPTR s;
 	if(nhashtab[i]!=NULL){
@@ -209,8 +208,7 @@ int i;
 	}
 }
 
-dumpmem(x)
-register MEMPTR x;
+void dumpmem(MEMPTR x)
 {
 	int crcint,icrcint;
 	float rlval,ilval;
@@ -278,9 +276,7 @@ register MEMPTR x;
 	}
 }
 
-dumpmemry(type,value)
-int type;
-WORDCELL value;
+void dumpmemry(int type,WORDCELL value)
 {
 	int crcint;
 	float rlval;
@@ -325,9 +321,7 @@ WORDCELL value;
 }
 
 
-void dumpval(stream,x)
-FILE *stream;
-VALUEPTR x;
+void dumpval(FILE *stream,VALUEPTR x)
 {       
 	int crcint,icrcint;
 	float rlval,ilval;
@@ -393,8 +387,7 @@ else fprintf(stream,"%d",
 }
 
 STRING
-code_to_char(s)
-STRING s;
+code_to_char(STRING s)
 { 
 	char c,newstring[200];
 	int j,i,l,sum;
@@ -467,8 +460,7 @@ STRING s;
 	return(s);
 }
 
-char_to_code(c)
-char c;
+void char_to_code(char c)
 {
 	charcode[0]='\\';
 	switch(c){
@@ -509,9 +501,7 @@ char c;
 	charcode[2] = '\0';
 }
 
-pstring(s,channel)
-char *s;
-FILE *channel;
+void pstring(char *s,FILE *channel)
 { 
 	char c;
 	int i;
@@ -569,7 +559,7 @@ void dumpval2(FILE *stream,VALUE x)
 	}
 }
 
-void dumplist(CELLPTR x,int channel)
+void dumplist(CELLPTR x,FILE *channel)
 {       
 	float rlval;
 	int crcint;
@@ -651,17 +641,12 @@ void dumplist(CELLPTR x,int channel)
 	fprintf(channel,"]");
 }
 
-dumpword(x,channel)
-int x;
-int channel;
+void dumpword(int x,FILE *channel)
 {
 	fprintf(channel,"%10s",wordtable[x]);
 }
 
-dumpstring(x,channel,flag)
-CELLPTR x;
-int channel;
-char flag;
+void dumpstring(CELLPTR x,FILE *channel,char flag)
 {   
 	char c;
 	if (!flag) fprintf(channel,"`");

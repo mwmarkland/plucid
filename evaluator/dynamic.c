@@ -14,9 +14,10 @@ int used;                 /* count of amount of space used   */
 int marking;
 int sfound,bfound;
 
-void dumpstring(CELLPTR x,int channel,char flag); /* dump.c */
-void dumplist(CELLPTR x,int channel); /* dump.c */
+void dumpstring(CELLPTR x,FILE *channel,char flag); /* dump.c */
+void dumplist(CELLPTR x,FILE *channel); /* dump.c */
 void dumphashes();              /* dump.c */
+void my_exit(int);              /* dump.c */
 char * morefrees(int quan, int size);
 void collect();
 void cleanup( STPPTR table[]);
@@ -106,7 +107,7 @@ char * morefrees(int quan, int size)
 
   recsize = dynasizes[size];
   amount = quan*dynasizes[size];
-  if( -1 == (int) (list.sp = sbrk(amount)) ){
+  if( (void *) -1 == (list.sp = sbrk(amount)) ){
     list.sp = NULL;
   }
   else{
@@ -149,7 +150,7 @@ void collect()
   for(x1=VStop; x1>=&v_stack[0]; x1--){
     if(x1->v_type==DOTTED_PAIR){
       if(x1->v_value.dp==NULL){
-        fprintf(stderr,"value stack has null dp %d\n",x1);
+        fprintf(stderr,"value stack has null dp %p\n",x1);
       }
       markdp(x1->v_value.dp);
     }
@@ -157,7 +158,7 @@ void collect()
   for(x1=VStop; x1>=&v_stack[0]; x1--){
     if(x1->v_type==QSTRING ){
       if(x1->v_value.strg==NULL){
-        fprintf(stderr,"value stack has null strg %d\n",x1);
+        fprintf(stderr,"value stack has null strg %p\n",x1);
       }
       markstrg(x1->v_value.strg);
     }
@@ -244,7 +245,7 @@ void collect()
           break;
         default:
           fprintf(stderr,"collect:size is %d\n",size);
-          fprintf(stderr,"%d,%d\n",x.sp,
+          fprintf(stderr,"%p,%p\n",x.sp,
                   x.no->f_next);
           my_exit(-1);
       }

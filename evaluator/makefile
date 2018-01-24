@@ -1,7 +1,7 @@
 CC=gcc
 R=
 DESTDIR=/usr/local/bin
-CFLAGS= -g -std=c99 -fdiagnostics-color=never
+CFLAGS= -g -std=c99 -fdiagnostics-color=never -Werror
 CPPFLAGS=-D_POSIX_C_SOURCE -D_XOPEN_SOURCE -D_DEFAULT_SOURCE
 LDFLAGS=-static
 LINT= lint -p

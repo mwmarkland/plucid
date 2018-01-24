@@ -1,5 +1,5 @@
 void hiaton();
-int rupture();
+void rupture(int);
 STRING code_to_char();
 STRING strsave();
 STPPTR ssearch();

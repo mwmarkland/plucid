@@ -14,7 +14,7 @@ char * alloc(int size);             /* dynamic.c */
 void dumpval2(FILE *stream,VALUE x); /* dump.c */
   
 void error(STRING x,EXPRPTR y,int type,CELLUNION val); /* util.c */
-
+void my_exit(int n);                                   /* dump.c */
 /*
  *      all code for input to the interpreter is local to this file
  */
@@ -482,7 +482,7 @@ int getword2(char c)
 		if (ch == EOF) { 
 			return(-1); 
 		}
-		E(30) fprintf(stderr,"% not a word constant\n");
+		E(30) fprintf(stderr,"%% not a word constant\n");
 		return(-2);
 	case '(': 
 		*p++ = c; 
@@ -739,7 +739,7 @@ readword()
 	p = buffer;
 	for(*p++=ch; isalnum(*p=mygetchar()); p++);
 	ch = *p;
-	*p = NULL;
+	p = NULL;
 	for(i=0; i<wordquan; i++){
 		if(!strcmp(wordtable[i],buffer)){
 			break;
