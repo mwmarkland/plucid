@@ -1,7 +1,15 @@
 #include "imanifs.h"
 #include "iglobals.h"
+
+#include <stdlib.h>
+
 int countlen;
 int comps=0;
+
+void bar(int);                  /* dump.c */
+void dumps(STPPTR x);           /* dump.c */
+void dumpstp(STPPTR x);         /* dump.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
 
 char
 memsearch(place,n,s,t,p)
@@ -24,11 +32,11 @@ register STPPTR s,t,p;
 	}
 
 	D(20) { 
-		fprintf(stderr,"t=%d p=%d\n",(int)t,(int)p); 
+		fprintf(stderr,"t=%p p=%p\n",(STPPTR)t,(STPPTR)p); 
 	}
 
 
-	i = ((59*(int)s)+(39*(int)t)+(7*(int)p)+(n)) % NHASHSIZE;
+	i = ((59*(long long)s)+(39*(long long)t)+(7*(long long)p)+(n)) % NHASHSIZE;
 	if (i<0) i = -i;
 	found=0;
 	D(19) { 

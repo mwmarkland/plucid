@@ -1,16 +1,29 @@
 #include "imanifs.h"
 #include "iglobals.h"
+
+#include <stdlib.h>
+
 int lu_time;
 int rupturelevel = 0;
 char rp_ch;
+
+void hiaton();                  /* input.c */
+float readnumber();             /* input.c */
+void stats();                   /* dump.c */
+void echoexpr(EXPRPTR p);       /* main.c */
+void my_exit(int);              /* dump.c */
+void collect();                 /* dynamic.c */
+void memusage();                /* dynamic.c */
+void trace_ops();
+void explain();
+
 void rupture(int x)
 {
 	int num;
 	char *gets(), input[80],ch;
 	FILE *term;
 	int i;
-	float readnumber();
-	extern hiaton();
+
 	rupturelevel++;
 	signal(SIGINT,rupture);
 	signal(SIGALRM,hiaton);
@@ -37,15 +50,15 @@ void rupture(int x)
 				stats();
 				break;
 			case 'x':
-				fprintf(stderr,"height of stp_stack %d\n",
+				fprintf(stderr,"height of stp_stack %ld\n",
 				stp_top - &stp_stack[0]);
 				fprintf(stderr,"max height of stp_stack %d\n",
 				STPSIZE);
-				fprintf(stderr,"height of d_stack %d\n",
+				fprintf(stderr,"height of d_stack %ld\n",
 				d_top - &d_stack[0]);
 				fprintf(stderr,"max height of d_stack %d\n",
 				DSIZE);
-				fprintf(stderr,"height of v_stack %d\n",
+				fprintf(stderr,"height of v_stack %ld\n",
 				v_top - &v_stack[0]);
 				fprintf(stderr,"max height of v_stack %d\n",
 				VSIZE);
@@ -116,7 +129,7 @@ void rupture(int x)
 	rupturelevel--;
 }
 
-explain()
+void explain()
 {   
 	fprintf(stderr,"The following is a list of the currently available commands\n");
 	fprintf(stderr,"o - Prints out the currently available trace options\n");
@@ -140,7 +153,7 @@ explain()
 	fprintf(stderr,"x - Output the current height and the limits of the evaluators runtime stacks\n");
 }
 
-trace_ops()
+void trace_ops()
 {   
 	fprintf(stderr,"The following is a list of the currently available trace options\n");
 	fprintf(stderr,"t0 - Print out a message very time a request is made for\n");
