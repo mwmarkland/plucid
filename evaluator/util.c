@@ -4,7 +4,7 @@
 void dumpfile(char *x,EXPRPTR e);        /* dump.c */
 void dumpmemry(int type,WORDCELL value); /* dump.c */
 void my_exit(int n);                     /* dump.c */
-void error(STRING x,EXPRPTR y,int type,CELLUNION val)
+void error(STRING x,EXPRPTR y,long type,CELLUNION val)
 {       
 	int i;
 	if  (!tflags[9]) {  

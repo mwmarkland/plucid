@@ -85,9 +85,7 @@ printf("Recursing...\n");
 	return((CELLPTR)temp);
 }
 
-listlen(type,val)
-int type;
-WORDCELL val;
+int listlen(int type, WORDCELL val)
 {    
 	CELLPTR a,b;
 	if (type == NIL) return(0);
