@@ -929,8 +929,7 @@ f_eqstrg(l1,l2)
   return(true && f_eqstrg(l1->tl.strg,l2->tl.strg));
 }
 
-f_const(e)
-rEXPRPTR e;
+void f_const(rEXPRPTR e)
 {
   VSpush;
   VStype = NUMERIC;
@@ -938,16 +937,14 @@ rEXPRPTR e;
 }
 
 
-f_word(e)
-rEXPRPTR e;
+void f_word(rEXPRPTR e)
 {
   VSpush;
   VStype = WORD;
   VSvalue.wrd = e->arg1.i;
 }
 
-f_if(e)
-rEXPRPTR e;
+void f_if(rEXPRPTR e)
 { 
   int ptype,xtype;
   WORDCELL xval;

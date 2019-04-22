@@ -1,11 +1,51 @@
 #include "imanifs.h"
 #include "iglobals.h"
 
+#include <stdlib.h>
+
 #define evalname(x) (*ftable[exprtable[x]->f].apply)(exprtable[x])
 #define INMEMORY(x) memsearch(&memplace,x,s,t,p)
 
+void my_exit(int n);                                /* dump.c */
+void dumpmem(MEMPTR x);
+void dumps(STPPTR x);                /* dumps.c */
+STRING formstring(char *,CELLPTR);   /* string.c */
+STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
+char memsearch(MEMPTR *place, int n, STPPTR s, STPPTR t, STPPTR p); /* memory.c */
+void dumpt(STPPTR x);           /* dump.c */
 
-dumpname(m,n)
+int read_c_item(CELLUNION *v);  /* input.c */
+int read_p_item(CELLUNION *v);  /* input.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
+
+int read_c_item(CELLUNION *v);  /* input.c */
+int read_p_item(CELLUNION *v);  /* input.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
+void dumps(STPPTR x);                /* dumps.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+void dumpstp(STPPTR x);         /* dump.c */
+
+void rm_eres(STPPTR stptl);			    /* dynamic.c */
+void my_exit(int n);                                /* dump.c */
+void dumps(STPPTR x);                /* dumps.c */
+STRING formstring(char *,CELLPTR);   /* string.c */
+STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
+char memsearch(MEMPTR *place, int n, STPPTR s, STPPTR t, STPPTR p); /* memory.c */
+void dumpt(STPPTR x);           /* dump.c */
+
+void display();
+void f_var1(EXPRPTR e);
+void f_var2(EXPRPTR e);
+void f_var3(EXPRPTR e);
+
+
+
+
+void bar(int x);
+
+void dumpname(m,n)
 MEMPTR m;
 int n;
 {  
@@ -27,8 +67,7 @@ int n;
  *      Later they may be broken up for efficiency
  */
 
-f_var(e)
-EXPRPTR e;
+void f_var(EXPRPTR e)
 {       
 	varcount++;
 	if(e->arg3.i==0){
@@ -50,8 +89,7 @@ EXPRPTR e;
  *      the simple case where the variable being requested is defined
  *      in the same function environment that it is being requested from
  */
-f_var1(e)
-EXPRPTR e;
+void f_var1(EXPRPTR e)
 {
 	MEMPTR memplace;
 	STPPTR stpsearch(),ssearch();
@@ -106,8 +144,7 @@ EXPRPTR e;
  *      a function that is either the function we are in now, or
  *      is a function containing the function we are in now
  */
-f_var2(e)
-EXPRPTR e;
+void f_var2(EXPRPTR e)
 {
 	MEMPTR memplace;
 	STPPTR stpsearch(),ssearch();
@@ -168,8 +205,7 @@ EXPRPTR e;
  *      the variable being accessed is a defined as a local variable in
  *      some function environment containing the one we are presently in
  */
-f_var3(e)
-EXPRPTR e;
+void f_var3(EXPRPTR e)
 {
 	MEMPTR  memplace;
 	STPPTR stpsearch(),ssearch();
@@ -243,8 +279,7 @@ EXPRPTR e;
  *      a variable of the same time and place as the current environment
  *      is being requested. this case require no changes on the stacks
  */
-f_local(e)
-EXPRPTR e;
+void f_local(EXPRPTR e)
 {
 	MEMPTR memplace;
 	STPPTR stpsearch();
@@ -283,8 +318,7 @@ EXPRPTR e;
  *      arg4    address of actual parameters to substitute
 	arg5    # of parameters
  */
-f_fcall(e)
-EXPRPTR e;
+void f_fcall(EXPRPTR e)
 {
 	register int i;
 	register DISPLAYPTR env;
@@ -380,8 +414,7 @@ EXPRPTR e;
 
 
 
-f_eres(e)
-EXPRPTR e;
+void f_eres(EXPRPTR e)
 {
 	MEMPTR memplace;
 	STPPTR stpsearch();
@@ -416,7 +449,7 @@ EXPRPTR e;
 }
 
 
-display()
+void display()
 {
 	fprintf(stderr,"Push Display:\n");
 	fprintf(stderr,"tf:"); 

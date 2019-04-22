@@ -5,16 +5,20 @@
 #include <unistd.h>
 #include <string.h>
 
+int read_c_item(CELLUNION *v);  /* input.c */
+int read_p_item(CELLUNION *v);  /* input.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
+void dumps(STPPTR x);                /* dumps.c */
+void dumpval2(FILE *stream, VALUE x); /* dump.c */
+void dumpstp(STPPTR x);         /* dump.c */
+
 void my_exit(int n);                                /* dump.c */
 void dumps(STPPTR x);                /* dumps.c */
 STRING formstring(char *,CELLPTR);   /* string.c */
 STPPTR stpsearch(long hd,STPPTR tl,STPPTR table[]); /* memory.c */
 char memsearch(MEMPTR *place, int n, STPPTR s, STPPTR t, STPPTR p); /* memory.c */
 void dumpt(STPPTR x);           /* dump.c */
-
-int read_c_item(CELLUNION *v);  /* input.c */
-int read_p_item(CELLUNION *v);  /* input.c */
-void dumpval2(FILE *stream, VALUE x); /* dump.c */
 
 
 
@@ -118,8 +122,9 @@ void f_filter(rEXPRPTR e)
 	int i,iox,ii;
 	STPPTR t1,s,t,p,s1,p1,ss,tt,pp;
 	int pipe_a[2],pipe_b[2];
-	int *iostring,found,sx[100],ops[20];
-
+	int *iostring,found,ops[20];
+	char sx[100];
+	
 	FILE *tin,*tout;
 	int tinx,tch,save_ch,savei;
 	IOPTR m,save_io;
@@ -140,7 +145,7 @@ void f_filter(rEXPRPTR e)
 		eval(arg1.x);
 		switch(VStype){
 		case QSTRING:     
-			formstring(&sx[0],VSvalue.strg);
+		  formstring((char *)&sx[0],VSvalue.strg);
 			VSpop;
 			m = get_io_item(IOFILTER,e,s,t->stptl,p);
 			m->next=io_info[e->arg5.i];
@@ -149,7 +154,7 @@ void f_filter(rEXPRPTR e)
 			switch(VStype)
 			{ 
 			case QSTRING: 
-				formstring(&ops[0],VSvalue.strg);
+			  formstring((char *)&ops[0],VSvalue.strg);
 				for(iostring=ops;
 				      *iostring!='\0'; *iostring++)
 					    switch(iostring[0])

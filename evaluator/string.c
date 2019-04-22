@@ -2,13 +2,15 @@
 #include "imanifs.h"
 #include "iglobals.h"
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 #define EODCASE  VStype = EOD; return
 
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
 
-formstring(s,sl)
-char *s;
-CELLPTR sl;
+void formstring(char *s, CELLPTR sl)
 { 
 CELLPTR temp;
 int i;
@@ -24,8 +26,7 @@ s[i] = '\0';
 }
 
 CELLPTR
-findstring(s)
-char *s;
+findstring(char *s)
 { 
 CELLPTR temp,cns();
 char *alloc(),ch;
@@ -46,10 +47,9 @@ return(temp);
 }
 
 
-f_substr(e)
-rEXPRPTR e;
+void f_substr(rEXPRPTR e)
 { 
-int i,type1,type2,strlen();
+int i,type1,type2;
 char *p,*temps,s[200],buff[200];
 CELLPTR temp,findstring();
 CELLUNION val1,val2;
@@ -146,17 +146,14 @@ VStype = QSTRING;
 return;
 }
 
-strglen(type,val)
-int type;
-WORDCELL val;
+int strglen(int type,WORDCELL val)
 {    
 CELLPTR a,b;
 if (val.strg->data.bits.d_tl == NIL) return(0);
 return(1+strglen(val.strg->data.bits.d_tl,val.strg->tl));
 }
 
-f_scons(e)
-rEXPRPTR e;
+void f_scons(rEXPRPTR e)
 { 
 int a_type,b_type;
 CELLPTR cns(),temp;
@@ -198,8 +195,7 @@ VStype = QSTRING;
 VSvalue.strg = temp;
 }
 
-f_strconc(e)
-rEXPRPTR e;
+void f_strconc(rEXPRPTR e)
 { 
 int t1_type,t2_type;
 CELLUNION t1_val,t2_val;
@@ -274,8 +270,7 @@ if ( a->data.bits.d_tl==QSTRING) {
 return(b);
 }
 
-f_isstring(e)
-rEXPRPTR e;
+void f_isstring(rEXPRPTR e)
 {
 eval(arg1.x);
 switch(VStype)
@@ -296,8 +291,7 @@ default:
 }
 }
 
-f_chr(e)
-rEXPRPTR e;
+void f_chr(rEXPRPTR e)
 { 
 char s[2];
 eval(arg1.x);
@@ -329,8 +323,7 @@ default:
 }
 }
 
-f_ord(e)
-rEXPRPTR e;
+void f_ord(rEXPRPTR e)
 {
 eval(arg1.x);
 switch(VStype)
