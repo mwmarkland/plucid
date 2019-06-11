@@ -2,14 +2,20 @@
 #include "imanifs.h"
 #include "iglobals.h"
 #include <math.h>
+#include <stdlib.h>
+
 
 #define ERRCASE  VStype = ERROR; return;
 
 
 #define EODCASE  VStype = EOD; return
 
-f_append(e)
-rEXPRPTR e;
+
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
+STRING formstring(char *,CELLPTR);   /* string.c */
+int findword(STRING s);
+
+void f_append(rEXPRPTR e)
 { 
 	char t1_type,t2_type;
 	CELLUNION t1_val,t2_val;
@@ -94,8 +100,7 @@ int listlen(int type, WORDCELL val)
 }
 
 
-f_cons(e)
-rEXPRPTR e;
+void f_cons(rEXPRPTR e)
 { 
 	int a_type,b_type;
 	CELLPTR cns(),temp;
@@ -158,7 +163,7 @@ WORDCELL a,b;
 	return((CELLPTR)temp);
 }
 
-f_hd(e)
+void f_hd(e)
 rEXPRPTR e;
 {
 	eval(arg1.x);
@@ -186,7 +191,7 @@ rEXPRPTR e;
 	}
 }
 
-f_tl(e)
+void f_tl(e)
 rEXPRPTR e;
 {
 	eval(arg1.x);
@@ -214,7 +219,7 @@ rEXPRPTR e;
 	}
 }
 
-f_islist(e)
+void f_islist(e)
 rEXPRPTR e;
 { 
 	eval(arg1.x);
@@ -236,7 +241,7 @@ rEXPRPTR e;
 	}
 }
 
-f_mknumber(e)
+void f_mknumber(e)
 rEXPRPTR e;
 { 
 	char s[30];
@@ -263,7 +268,7 @@ rEXPRPTR e;
 	}
 }
 
-f_mkstring(e)
+void f_mkstring(e)
 rEXPRPTR e;
 { 
 	CELLPTR findstring();
@@ -284,7 +289,7 @@ rEXPRPTR e;
 	}
 }
 
-f_mkword(e)
+void f_mkword(e)
 rEXPRPTR e;
 { 
 	CELLUNION val;

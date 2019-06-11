@@ -2,10 +2,15 @@
 #include "imanifs.h"
 #include "iglobals.h"
 #include <math.h>
+#include <stdlib.h>
 
 #define EODCASE  VStype = EOD; return
+void error(STRING x,EXPRPTR y,long type,CELLUNION val); /* util.c */
+STRING formstring(char *,CELLPTR);   /* string.c */
+int findword(STRING s);
 
-f_real(e)
+
+void f_real(e)
 rEXPRPTR e;
 { 
 double cos();
@@ -29,7 +34,7 @@ default:
 }
 }
 
-f_imag(e)
+void f_imag(e)
 rEXPRPTR e;
 { 
 double cos();
@@ -54,7 +59,7 @@ default:
 
 }
 
-f_cos(e)
+void f_cos(e)
 rEXPRPTR e;
 { 
 double cos();
@@ -79,7 +84,7 @@ default:
 
 }
 
-f_sin(e)
+void f_sin(e)
 rEXPRPTR e;
 { 
 double sin();
@@ -104,7 +109,7 @@ default:
 
 }
 
-f_log(e)
+void f_log(e)
 rEXPRPTR e;
 { 
 double log();
@@ -135,7 +140,7 @@ default:
 
 }
 
-f_complex(e)
+void f_complex(e)
 rEXPRPTR e;
 { 
 double pow();
@@ -170,7 +175,7 @@ case NUMERIC:
 		break;
 	default:    
 		error("2nd arg of complex should be numeric, not",
-		e->arg3.i,ERROR,VSvalue);
+		      (EXPRPTR)(e->arg3.i),ERROR,VSvalue);
 		VStype = ERROR;
 	}
 	break;
@@ -191,7 +196,7 @@ default:
 
 
 
-f_exp(e)
+void f_exp(e)
 rEXPRPTR e;
 { 
 double pow();
@@ -243,7 +248,7 @@ default:
 
 }
 
-f_sqrt(e)
+void f_sqrt(e)
 rEXPRPTR e;
 { 
 double sqrt();
@@ -274,7 +279,7 @@ default:
 
 }
 
-f_tan(e)
+void f_tan(e)
 rEXPRPTR e;
 { 
 double tan();
@@ -300,7 +305,7 @@ default:
 
 
 
-f_log10(e)
+void f_log10(e)
 rEXPRPTR e;
 { 
 double log10();
@@ -331,7 +336,7 @@ default:
 
 }
 
-f_abs(e)
+void f_abs(e)
 rEXPRPTR e;
 { 
 double fabs();
