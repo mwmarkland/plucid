@@ -8,7 +8,9 @@ EXPRPTR listnode(),identlistnode();
 EXPRPTR stripnumb(),bodynode(),exprlist2(),exprlist3();
 float stripn(),stripcode();
 STRING stripname();
-%}
+ STRING strsave();
+#define YYSTYPE union stacktype
+ %}
 %term
       LU0FUNC LU1FUNC F1FUNC F2FUNC LU2FUNC LU3FUNC WHERE END IS CURRENT
       IF THEN ELSE ELSIF FI CASE COND OF DEFAULT

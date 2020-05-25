@@ -1,3 +1,8 @@
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+#include "y.tab.h"
 
 STRING   incdir;
 

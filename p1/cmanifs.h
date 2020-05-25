@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "y.tab.h"
+/*#include "y.tab.h" */ /* mwm*/
 
 #define NKEYWORDS         162
 #define BUFFERLENGTH      200
