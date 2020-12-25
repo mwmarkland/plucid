@@ -66,7 +66,7 @@ connect_file(argc,argv)
 int argc;
 char **argv;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	STRING strsave();
 	int i,j;
 	extern FILE *lexin;
@@ -187,7 +187,7 @@ STRING
 strsave(s)
 char *s;
     {    char  *p;
-	 STRING calloc();
+	 /*STRING calloc();*/
 	 if ( ( p = calloc(1,strlen(s)+1))==NULL)
 	      fprintf(stderr,"ran out of space\n");
 	      else strcpy(p,s);
