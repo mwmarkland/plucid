@@ -1,5 +1,6 @@
 
 
+
 #include "cmanifs.h"
 #include "cglobals.h"
 
@@ -30,7 +31,7 @@ struct {
 yylex()
 {
 	int k;
-	STRING strsave();
+	/* STRING strsave(char *); */
 	STRING getstring(),getword();
 	float getnum();
 
@@ -59,7 +60,7 @@ lexgetc()
 		c = peekc;
 		peekc = 0;
 		return(c);
-	}else if (((int) c = getc(lexin))==EOF){
+	}else if ((c = getc(lexin))==EOF){
 	      if(in_index!=0){
 		      in_index--;
 		      lexin = in_files[in_index].in_fdes;

@@ -163,7 +163,7 @@ filenode(filename,first_line,last_line,cursor_position)
 char *filename;
 int first_line,last_line,cursor_position;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR4));
 	p->f = F_FILE;
@@ -178,7 +178,7 @@ EXPRPTR
 connode(s1,s2)
 char *s1, *s2;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f = F_CONST;
@@ -191,7 +191,7 @@ EXPRPTR
 f_connode(n)
 float n;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1, sizeof(EXPR2));
 	p->f =      F_CONST;
@@ -206,7 +206,7 @@ char *name;
 int argcount;
 EXPRPTR exprlist,file;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_VAR;
@@ -223,7 +223,7 @@ char *name;
 int argcount;
 EXPRPTR exprlist,file;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR4));
 	p->f =      F_OP;
@@ -239,7 +239,7 @@ wherenode(expr,exprlist,file)
 EXPRPTR expr;
 EXPRPTR exprlist,file;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_WHERE;
@@ -255,7 +255,7 @@ char *name;
 int argcount;
 EXPRPTR argnames,expr,file;
 {
-	STRING calloc();
+	/* STRING calloc(); */
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR5));
 	p->f =      F_DEFN;
@@ -272,7 +272,7 @@ declnode(name,expr,file)
 char *name;
 EXPRPTR expr,file;
 {
-	STRING calloc();
+	/*STRING calloc();*/
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR3));
 	p->f =      F_DECL;
@@ -288,7 +288,7 @@ identlistnode(tail,name)
 EXPRPTR tail;
 char *name;
 {
-	STRING calloc();
+	/*STRING calloc();*/
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_IDENTLISTNODE;
@@ -301,7 +301,7 @@ EXPRPTR
 listnode(tail,expr)
 EXPRPTR expr,tail;
 {
-	STRING calloc();
+	/*STRING calloc();*/
 	EXPRPTR p;
 	p = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p->f =      F_LISTNODE;
@@ -314,7 +314,7 @@ EXPRPTR
 exprlist2(expr1,expr2)
 EXPRPTR expr1,expr2;
 {
-	STRING calloc();
+	/*STRING calloc();*/
 	EXPRPTR p1,p2;
 	p1 = (EXPRPTR) calloc(1,sizeof(EXPR2));
 	p2 = (EXPRPTR) calloc(1,sizeof(EXPR2));
