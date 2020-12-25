@@ -1,13 +1,15 @@
+CC=gcc-8
+
 R=
 DESTDIR=/usr/local/bin
-CFLAGS=-O -DYYMAXDEPTH=900
+CFLAGS=-m32 -O -DYYMAXDEPTH=900
 LINT= lint -p
 TAR= tar -cv
 PRINT= pr -t $1 | cat -n
 inc = cmanifs.h cglobals.h
 
 pass3: main.o y.tab.o yylex.o expr.o ;
-	cc -s main.o expr.o y.tab.o yylex.o -o pass3
+	gcc-8 -m32 -s main.o expr.o y.tab.o yylex.o -o pass3
 
 cp install:
 	cp pass3 $R$(DESTDIR)/pass3
