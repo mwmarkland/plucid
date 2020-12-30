@@ -1,7 +1,7 @@
 CC=gcc-8
 R=
 DESTDIR=/usr/local/bin
-CFLAGS=-m32 -DYYMAXDEPTH=900
+CFLAGS=-m32 -DYYERROR_VERBOSE -DYYMAXDEPTH=900
 LINT= lint -p
 TAR= tar -cv
 PRINT= pr -t $1 | cat -n

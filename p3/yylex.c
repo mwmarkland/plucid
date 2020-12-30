@@ -55,7 +55,7 @@ lexgetc()
 		c = peekc;
 		peekc = 0;
 		return(c);
-	}else if ((c = getc(lexin))==EOF){
+	}else if ((c = (int)getc(lexin))==EOF){
 	      if(in_index!=0){
 		      in_index--;
 		      lexin = in_files[in_index].in_fdes;
