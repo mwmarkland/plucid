@@ -1,13 +1,14 @@
+CC=gcc-8
 R=
 DESTDIR=/usr/local/bin
-CFLAGS=-g -DYYMAXDEPTH=900
+CFLAGS=-m32 -DYYERROR_VERBOSE -DYYMAXDEPTH=900
 LINT= lint -p
 TAR= tar -cv
 PRINT= pr -t $1 | cat -n
 inc = cmanifs.h cglobals.h
 
 pass5: main.o y.tab.o yylex.o expr.o ident.o;
-	cc -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
+	gcc-8 -m32 -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
 
 cp install:
 	cp pass5 $R$(DESTDIR)/pass5
@@ -27,12 +28,12 @@ print:
 
 
 all:    main.o y.tab.o yylex.o expr.o ident.o ;
-	cc -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
+	gcc-8 -m32 -g main.o expr.o y.tab.o yylex.o ident.o -o pass5
 	cp pass5 $R$(DESTDIR)/pass5
 	rm -f *.o y.tab.h y.tab.c pass5
 
 .c.o:
-	cc -c -g $<
+	gcc-8 -m32 -c -g $<
 
 main.o: $(inc) main.c
 cmanifs.h: y.tab.h

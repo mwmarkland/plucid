@@ -16,6 +16,11 @@
 #include "cmanifs.h"
 #include "cglobals.h"
 
+STRING strsave();
+STRING getstring(),getword();
+SYMPTR handle_ident();
+float getnum();
+
 yylex()
 {
 	int k;

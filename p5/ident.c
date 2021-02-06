@@ -1,6 +1,6 @@
 #include "cmanifs.h"
 #include "cglobals.h"
-
+STRING strsave();
 SYMPTR
 handle_ident(name,length)
 STRING name; char length;
@@ -28,7 +28,7 @@ find_ident(name,length)
 STRING name;
 char length;
 {
-	STRING calloc();
+
 	STRING strsave();
 	SYMPTR scan;
 	SYMPTR new;
@@ -73,7 +73,7 @@ STRING name;
 int length;
 char attr;
 {
-	STRING calloc();
+
 	SYMPTR scan, new,temp,prev;
 	int i;
 	char found;
@@ -170,7 +170,7 @@ SYMPTR for_ident(name,length)
 STRING name;
 int length;
 {
-	STRING calloc();
+
 	SYMPTR scan, new;
 	char found;
 	int i;
@@ -236,7 +236,7 @@ STRING s;
 
 enter_phrase()
 {
-	STRING calloc();
+
 	P_STACKPTR temp;
 	SYMPTR new;
 	int i;
@@ -318,7 +318,7 @@ exit_phrase()
 
 
 enter_function(){
-	STRING calloc();
+
 	F_STACKPTR new;
 
 	idusage = (int) U_FORMAL;

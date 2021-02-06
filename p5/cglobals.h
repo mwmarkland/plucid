@@ -1,3 +1,7 @@
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "y.tab.h"
 
 int filecount,l,c,peekc,errcount,in_index,true,false;
 
